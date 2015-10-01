@@ -29,7 +29,7 @@ module SamplePlayer
     private
 
     def pointer(data)
-      pointer = LibC.malloc(size_in_bytes)
+      pointer = LibC.malloc(size_in_bytes + 1)
       pointer.write_array_of_float(data)
       pointer
     end
@@ -37,6 +37,7 @@ module SamplePlayer
     def populate
       data = @audio_file.read(@frame_size)
       @size = data.size
+      data.unshift(@size)
       @data = pointer(data)
     end
   end

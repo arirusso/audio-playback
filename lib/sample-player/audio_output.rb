@@ -11,11 +11,12 @@ module SamplePlayer
     def latency
       @resource[:suggestedLatency]
     end
-    
+
     private
 
     def get_latency
-      FFI::PortAudio::API.Pa_GetDeviceInfo(@resource[:device])[:defaultHighOutputLatency]
+      info = FFI::PortAudio::API.Pa_GetDeviceInfo(@resource[:device])
+      info[:defaultHighOutputLatency]
     end
 
     def populate(channels)
