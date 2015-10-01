@@ -11,7 +11,7 @@ module SamplePlayer
       :frame_size => 2**12
     }.freeze
 
-    NUM_METADATA_BYTES = 2
+    NUM_METADATA_BYTES = 3
 
     def initialize(sample, options = {})
       @sample = sample
@@ -33,8 +33,9 @@ module SamplePlayer
 
     def populate
       data = @sample.data
-      data.unshift(0.0) # counter
       data.unshift(@sample.size)
+      data.unshift(0.0) # counter
+      data.unshift(0.0) # eof
       @data = pointer(data)
     end
   end

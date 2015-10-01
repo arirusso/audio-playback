@@ -5,7 +5,6 @@ module SamplePlayer
     def initialize(output)
       @muted = false
       @gain = 1.0
-      @counter = 0
       @eof = false
       @input = nil
       @output = output.resource
@@ -24,7 +23,7 @@ module SamplePlayer
     end
 
     def block
-      until @eof do
+      loop do
         sleep(0.0001)
       end
       true
@@ -50,24 +49,27 @@ module SamplePlayer
     def process(input, output, frames_per_buffer, timeInfo, statusFlags, user_data)
       #puts "--"
       #puts "Entering callback at #{Time.now.to_f}"
-      sample_size = user_data.get_float32(0).to_i
+      counter = user_data.get_float32(0).to_i
+      #puts "Frame: #{counter}"
+      sample_size = user_data.get_float32(2 * FFI::TYPE_FLOAT32.size).to_i
       #puts "Sample size: #{sample_size}"
-      if @counter >= sample_size - frames_per_buffer
-        if @counter < sample_size
+      if counter >= sample_size - frames_per_buffer
+        if counter < sample_size
           frame_size = sample_size.divmod(frames_per_buffer).last
         else
-          @eof = true
+          user_data.put_float32(1, 1.0)
           exit
         end
       end
       frame_size ||= frames_per_buffer
-      #puts "Frame: #{@counter}"
       #puts "Size per buffer: #{frames_per_buffer}"
-      offset = (@counter + Playback::NUM_METADATA_BYTES) * FFI::TYPE_FLOAT32.size
+      offset = (counter + Playback::NUM_METADATA_BYTES) * FFI::TYPE_FLOAT32.size
       data = user_data.get_array_of_float32(offset, frame_size)
       #puts "This buffer size: #{data.size}"
       output.write_array_of_float(data)
-      @counter += frames_per_buffer
+      counter += frames_per_buffer
+      user_data.put_float32(0, counter.to_f)
+
       #puts "Exiting callback at #{Time.now.to_f}"
       :paContinue
     end
