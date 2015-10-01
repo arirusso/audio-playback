@@ -63,7 +63,7 @@ module SamplePlayer
       #puts "This buffer size: #{data.size}"
       output.write_array_of_float(data)
       counter += frames_per_buffer
-      user_data.put_float32(0, counter.to_f)
+      user_data.put_float32(0, counter.to_f) # mark eof
 
       #puts "Exiting callback at #{Time.now.to_f}"
       :paContinue
