@@ -2,11 +2,12 @@ module SamplePlayer
 
   class AudioFile
 
-    attr_reader :num_channels, :sample_rate
+    attr_reader :num_channels, :path, :sample_rate, :size
 
-    def initialize(filename)
-      @file = RubyAudio::Sound.open(filename)
-      @size = File.size(filename)
+    def initialize(path)
+      @path = path
+      @file = RubyAudio::Sound.open(path)
+      @size = File.size(path)
       @num_channels = @file.info.channels
       @sample_rate = @file.info.samplerate
     end

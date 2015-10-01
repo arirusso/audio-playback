@@ -15,6 +15,14 @@ module SamplePlayer
     def initialize(audio_file, options = {})
       @audio_file = audio_file
       populate
+      report
+    end
+
+    def report
+      puts "Sample playback report for #{@audio_file.path}"
+      puts "Sample rate: #{@audio_file.sample_rate}"
+      puts "Channels: #{@audio_file.num_channels}"
+      puts "File size: #{@audio_file.size}"
     end
 
     private

@@ -37,12 +37,7 @@ module SamplePlayer
     end
 
     def report(playback)
-      puts "Playback report"
-      puts "Sample rate: #{playback.sample_rate}"
-      puts "Channels: #{playback.num_channels}"
-      puts "File size: #{playback.size}"
-      puts "Frame size: #{playback.frame_size}"
-      puts "Latency: #{@output[:suggestedLatency]}"
+      puts "Playing #{playback.sample.audio_file.path} with latency: #{@output[:suggestedLatency]}"
       self
     end
 

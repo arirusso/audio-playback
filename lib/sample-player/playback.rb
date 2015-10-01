@@ -17,6 +17,11 @@ module SamplePlayer
       @sample = sample
       @frame_size = options[:frame_size] || DEFAULT[:frame_size] #File.size(filename)
       populate
+      report
+    end
+
+    def report
+      puts "Playing #{@sample.audio_file.path} with frame size #{@frame_size}"
     end
 
     def size_in_bytes
