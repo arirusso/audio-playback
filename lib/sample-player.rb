@@ -19,6 +19,7 @@ require "sample-player/audio_file"
 require "sample-player/audio_output"
 require "sample-player/audio_stream"
 require "sample-player/context"
+require "sample-player/playback"
 require "sample-player/sample"
 
 module SamplePlayer

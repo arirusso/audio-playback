@@ -6,26 +6,19 @@ module SamplePlayer
 
     def initialize(filename)
       @file = RubyAudio::Sound.open(filename)
+      @size = File.size(filename)
       @num_channels = @file.info.channels
       @sample_rate = @file.info.samplerate
     end
 
-    def read(frame_size)
+    def read
       puts "Reading audio file"
-      buffer = RubyAudio::Buffer.float(frame_size, @num_channels)
-      counter = 0
-      ended = false
-      data = []
-
-      until ended do
-        begin
-          @file.seek(counter)
-          @file.read(buffer, frame_size)
-          data += buffer.to_a
-          counter += frame_size
-        rescue RubyAudio::Error
-          ended = true
-        end
+      buffer = RubyAudio::Buffer.float(@size, @num_channels)
+      begin
+        @file.seek(0)
+        @file.read(buffer, @size)
+        data = buffer.to_a
+      rescue RubyAudio::Error
       end
       puts "Finished reading audio file"
       data

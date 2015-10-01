@@ -17,11 +17,12 @@ module SamplePlayer
     end
 
     def play(sample)
-      report(sample)
-      open_sample(sample)
+      playback = Playback.new(sample)
+      report(playback)
+      open_playback(playback)
       start
     end
-    
+
     def block
       until @eof do
         sleep(0.0001)
@@ -31,16 +32,17 @@ module SamplePlayer
 
     private
 
-    def open_sample(sample)
-      open(@input, @output, sample.sample_rate.to_i, sample.frame_size, API::NoFlag, sample.data)
+    def open_playback(playback)
+      open(@input, @output, playback.sample_rate.to_i, playback.frame_size, API::NoFlag, playback.data)
       true
     end
 
-    def report(sample)
-      puts "Sample rate: #{sample.sample_rate}"
-      puts "Channels: #{sample.num_channels}"
-      puts "File size: #{sample.size}"
-      puts "Frame size: #{sample.frame_size}"
+    def report(playback)
+      puts "Playback report"
+      puts "Sample rate: #{playback.sample_rate}"
+      puts "Channels: #{playback.num_channels}"
+      puts "File size: #{playback.size}"
+      puts "Frame size: #{playback.frame_size}"
       puts "Latency: #{@output[:suggestedLatency]}"
       self
     end
