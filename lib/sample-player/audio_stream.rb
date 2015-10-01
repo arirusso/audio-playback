@@ -8,18 +8,20 @@ module SamplePlayer
       @counter = 0
       @eof = false
       @input = nil
-      @output = output
+      @output = output.resource
+      at_exit do
+        puts "exit"
+        close
+        FFI::PortAudio::API.Pa_Terminate
+      end
     end
 
     def play(sample)
       report(sample)
       open_sample(sample)
       start
-      block
     end
-
-    private
-
+    
     def block
       until @eof do
         sleep(0.0001)
@@ -27,13 +29,10 @@ module SamplePlayer
       true
     end
 
+    private
+
     def open_sample(sample)
-      open(@input, @output.resource, sample.sample_rate.to_i, sample.frame_size, API::NoFlag, sample.data)
-      at_exit do
-        puts "exit"
-        close
-        FFI::PortAudio::API.Pa_Terminate
-      end
+      open(@input, @output, sample.sample_rate.to_i, sample.frame_size, API::NoFlag, sample.data)
       true
     end
 
@@ -42,7 +41,7 @@ module SamplePlayer
       puts "Channels: #{sample.num_channels}"
       puts "File size: #{sample.size}"
       puts "Frame size: #{sample.frame_size}"
-      puts "Latency: #{@output.latency}"
+      puts "Latency: #{@output[:suggestedLatency]}"
       self
     end
 
