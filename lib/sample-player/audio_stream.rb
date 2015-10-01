@@ -7,39 +7,43 @@ module SamplePlayer
       @gain = 1.0
       @counter = 0
       @eof = false
-
+      @input = nil
       @sample = sample
+      @output = Output.new(@sample.num_channels)
 
-      # init audio output
-      FFI::PortAudio::API.Pa_Initialize
+      report
+      open
+      start
+      run
+    end
 
-      input = nil
-      output = FFI::PortAudio::API::PaStreamParameters.new
-      output[:device]                    = FFI::PortAudio::API.Pa_GetDefaultOutputDevice
-      output[:suggestedLatency]          = FFI::PortAudio::API.Pa_GetDeviceInfo(output[:device])[:defaultHighOutputLatency]
-      output[:hostApiSpecificStreamInfo] = nil
-      output[:channelCount]              = @sample.num_channels
-      output[:sampleFormat]              = FFI::PortAudio::API::Float32
+    private
 
-      puts "Sample rate: #{@sample.sample_rate}"
-      puts "Channels: #{@sample.num_channels}"
-      puts "File size: #{@sample.size}"
-      puts "Frame size: #{@sample.frame_size}"
-      puts "Latency: #{output[:suggestedLatency]}"
+    def run
+      until @eof do
+        sleep(0.0001)
+      end
+    end
 
-      open(input, output, @sample.sample_rate.to_i, @sample.frame_size, API::NoFlag, @sample.data)
-
+    def start
       at_exit do
         puts "exit"
         close
         FFI::PortAudio::API.Pa_Terminate
       end
+      super
+    end
 
-      start
+    def open
+      super(@input, @output.resource, @sample.sample_rate.to_i, @sample.frame_size, API::NoFlag, @sample.data)
+    end
 
-      until @eof do
-        sleep(0.0001)
-      end
+    def report
+      puts "Sample rate: #{@sample.sample_rate}"
+      puts "Channels: #{@sample.num_channels}"
+      puts "File size: #{@sample.size}"
+      puts "Frame size: #{@sample.frame_size}"
+      puts "Latency: #{@output.latency}"
     end
 
     def process(input, output, frames_per_buffer, timeInfo, statusFlags, user_data)
