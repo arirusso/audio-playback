@@ -63,7 +63,7 @@ module SamplePlayer
       frame_size ||= frames_per_buffer
       #puts "Frame: #{@counter}"
       #puts "Size per buffer: #{frames_per_buffer}"
-      offset = (@counter + 1) * FFI::TYPE_FLOAT32.size
+      offset = (@counter + Playback::NUM_METADATA_BYTES) * FFI::TYPE_FLOAT32.size
       data = user_data.get_array_of_float32(offset, frame_size)
       #puts "This buffer size: #{data.size}"
       output.write_array_of_float(data)

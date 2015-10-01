@@ -11,6 +11,8 @@ module SamplePlayer
       :frame_size => 2**12
     }.freeze
 
+    NUM_METADATA_BYTES = 2
+
     def initialize(sample, options = {})
       @sample = sample
       @frame_size = options[:frame_size] || DEFAULT[:frame_size] #File.size(filename)
@@ -24,13 +26,14 @@ module SamplePlayer
     private
 
     def pointer(data)
-      pointer = LibC.malloc(size_in_bytes + 1)
+      pointer = LibC.malloc(size_in_bytes + NUM_METADATA_BYTES)
       pointer.write_array_of_float(data)
       pointer
     end
 
     def populate
       data = @sample.data
+      data.unshift(0.0) # counter
       data.unshift(@sample.size)
       @data = pointer(data)
     end
