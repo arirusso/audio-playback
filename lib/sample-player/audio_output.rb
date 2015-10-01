@@ -9,10 +9,9 @@ module SamplePlayer
     end
 
     def latency
-      @resource[:suggestedLatency] 
+      @resource[:suggestedLatency]
     end
-
-
+    
     private
 
     def get_latency

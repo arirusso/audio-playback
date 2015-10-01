@@ -9,7 +9,7 @@ module SamplePlayer
       @eof = false
       @input = nil
       @sample = sample
-      @output = Output.new(@sample.num_channels)
+      @output = AudioOutput.new(@sample.num_channels)
 
       report
       open
