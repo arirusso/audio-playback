@@ -1,6 +1,6 @@
 require "helper"
 
-class SamplePlayer::FileTest < Minitest::Test
+class AudioPlayback::FileTest < Minitest::Test
 
   context "AudioFile" do
 
@@ -9,8 +9,8 @@ class SamplePlayer::FileTest < Minitest::Test
       context "mono" do
 
         setup do
-          @path = "test/media/mono.wav"
-          @file = SamplePlayer::File.new(@path)
+          @path = "test/media/1-mono-44100.wav"
+          @file = AudioPlayback::File.new(@path)
         end
 
         should "populate" do
@@ -33,8 +33,8 @@ class SamplePlayer::FileTest < Minitest::Test
       context "stereo" do
 
         setup do
-          @path = "test/media/stereo.wav"
-          @file = SamplePlayer::File.new(@path)
+          @path = "test/media/1-stereo-44100.wav"
+          @file = AudioPlayback::File.new(@path)
         end
 
         should "populate" do
@@ -47,7 +47,7 @@ class SamplePlayer::FileTest < Minitest::Test
 
         should "have correct information" do
           assert_equal 2, @file.num_channels
-          assert_equal 48000, @file.sample_rate.to_i
+          assert_equal 44100, @file.sample_rate.to_i
           assert_equal @path, @file.path
           assert_equal File.size(@path), @file.size
         end
@@ -61,8 +61,8 @@ class SamplePlayer::FileTest < Minitest::Test
       context "mono" do
 
         setup do
-          @path = "test/media/mono.wav"
-          @file = SamplePlayer::File.new(@path)
+          @path = "test/media/1-mono-44100.wav"
+          @file = AudioPlayback::File.new(@path)
           @data = @file.read
         end
 
@@ -80,8 +80,8 @@ class SamplePlayer::FileTest < Minitest::Test
       context "stereo" do
 
         setup do
-          @path = "test/media/stereo.wav"
-          @file = SamplePlayer::File.new(@path)
+          @path = "test/media/1-stereo-44100.wav"
+          @file = AudioPlayback::File.new(@path)
           @data = @file.read
         end
 

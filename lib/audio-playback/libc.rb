@@ -1,4 +1,4 @@
-module SamplePlayer
+module AudioPlayback
 
   module LibC
     extend FFI::Library

@@ -1,4 +1,4 @@
-module SamplePlayer
+module AudioPlayback
 
   class Stream < FFI::PortAudio::Stream
 

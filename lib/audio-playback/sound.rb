@@ -1,4 +1,4 @@
-module SamplePlayer
+module AudioPlayback
 
   class Sound
 
@@ -8,7 +8,7 @@ module SamplePlayer
     def_delegators :@audio_file, :num_channels, :sample_rate
 
     def self.load(filename)
-      file = SamplePlayer::File.new(filename)
+      file = AudioPlayback::File.new(filename)
       new(file)
     end
 
