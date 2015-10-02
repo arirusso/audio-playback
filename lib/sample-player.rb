@@ -15,8 +15,8 @@ require "sample-player/libc"
 require "sample-player/thread"
 
 # classes
-require "sample-player/audio_output"
 require "sample-player/file"
+require "sample-player/output"
 require "sample-player/playback"
 require "sample-player/sound"
 require "sample-player/stream"

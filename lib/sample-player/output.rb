@@ -1,6 +1,6 @@
 module SamplePlayer
 
-  class AudioOutput
+  class Output
 
     attr_reader :resource
 
