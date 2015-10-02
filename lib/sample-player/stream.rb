@@ -1,6 +1,6 @@
 module SamplePlayer
 
-  class AudioStream < FFI::PortAudio::Stream
+  class Stream < FFI::PortAudio::Stream
 
     def initialize(output)
       @muted = false

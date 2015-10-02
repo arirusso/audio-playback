@@ -15,20 +15,15 @@ require "sample-player/libc"
 require "sample-player/thread"
 
 # classes
-require "sample-player/file"
 require "sample-player/audio_output"
-require "sample-player/audio_stream"
 require "sample-player/context"
+require "sample-player/file"
 require "sample-player/playback"
 require "sample-player/sound"
+require "sample-player/stream"
 
 module SamplePlayer
 
   VERSION = "0.0.1"
-
-  # Shortcut to Context constructor
-  def self.new(*args, &block)
-    Context.new(*args, &block)
-  end
 
 end
