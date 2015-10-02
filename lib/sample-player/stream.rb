@@ -46,7 +46,7 @@ module SamplePlayer
     end
 
     def report(playback)
-      puts "Playing #{playback.sample.audio_file.path} with latency: #{@output[:suggestedLatency]}"
+      puts "Playing #{playback.sound.audio_file.path} with latency: #{@output[:suggestedLatency]}"
       self
     end
 
