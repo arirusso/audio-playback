@@ -26,7 +26,8 @@ module SamplePlayer
 
     # Bytes
     def data_size
-      ((@sample.size * @sample.num_channels) + METADATA.count) * FFI::TYPE_FLOAT32.size
+      frames = (@sample.size * @sample.num_channels) + METADATA.count
+      frames * FFI::TYPE_FLOAT32.size
     end
 
     private
