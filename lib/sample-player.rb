@@ -16,7 +16,6 @@ require "sample-player/thread"
 
 # classes
 require "sample-player/audio_output"
-require "sample-player/context"
 require "sample-player/file"
 require "sample-player/playback"
 require "sample-player/sound"
