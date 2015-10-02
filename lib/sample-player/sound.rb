@@ -1,6 +1,6 @@
 module SamplePlayer
 
-  class Sample
+  class Sound
 
     extend Forwardable
 
@@ -19,7 +19,7 @@ module SamplePlayer
     end
 
     def report
-      puts "Sample playback report for #{@audio_file.path}"
+      puts "Sound report for #{@audio_file.path}"
       puts "Sample rate: #{@audio_file.sample_rate}"
       puts "Channels: #{@audio_file.num_channels}"
       puts "File size: #{@audio_file.size}"
