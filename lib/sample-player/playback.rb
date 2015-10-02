@@ -4,24 +4,24 @@ module SamplePlayer
 
     extend Forwardable
 
-    attr_reader :frame_size, :data, :sample
+    attr_reader :buffer_size, :data, :sample
     def_delegators :@sample, :audio_file, :num_channels, :sample_rate, :size
 
     DEFAULT = {
-      :frame_size => 2**12
+      :buffer_size => 2**12
     }.freeze
 
     METADATA = [:size, :num_channels, :counter, :eof].freeze
 
     def initialize(sample, options = {})
       @sample = sample
-      @frame_size = options[:frame_size] || DEFAULT[:frame_size] #File.size(filename)
+      @buffer_size = options[:buffer_size] || DEFAULT[:buffer_size] #File.size(filename)
       populate
       report
     end
 
     def report
-      puts "Playing #{@sample.audio_file.path} with buffer size #{@frame_size}"
+      puts "Playing #{@sample.audio_file.path} with buffer size #{@buffer_size}"
     end
 
     # Bytes

@@ -41,7 +41,7 @@ module SamplePlayer
     private
 
     def open_playback(playback)
-      open(@input, @output, playback.sample_rate.to_i, playback.frame_size, FFI::PortAudio::API::NoFlag, playback.data)
+      open(@input, @output, playback.sample_rate.to_i, playback.buffer_size, FFI::PortAudio::API::NoFlag, playback.data)
       true
     end
 
