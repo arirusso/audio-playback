@@ -25,4 +25,12 @@ module AudioPlayback
 
   VERSION = "0.0.1"
 
+  def self.play(filename)
+    sound = Sound.load(filename)
+    output = Output.new(sound.num_channels)
+    stream = Stream.new(output)
+    stream.play(sound)
+    stream
+  end
+
 end

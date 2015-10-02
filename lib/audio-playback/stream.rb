@@ -16,8 +16,8 @@ module AudioPlayback
       end
     end
 
-    def play(sample)
-      playback = Playback.new(sample)
+    def play(sound)
+      playback = Playback.new(sound)
       report(playback)
       open_playback(playback)
       start
