@@ -21,17 +21,18 @@ module SamplePlayer
     end
 
     def report
-      puts "Playing #{@sample.audio_file.path} with frame size #{@frame_size}"
+      puts "Playing #{@sample.audio_file.path} with buffer size #{@frame_size}"
     end
 
-    def size_in_bytes
-      @sample.size * FFI::TYPE_FLOAT32.size
+    # Bytes
+    def data_size
+      ((@sample.size * @sample.num_channels) + METADATA.count) * FFI::TYPE_FLOAT32.size
     end
 
     private
 
     def pointer(data)
-      pointer = LibC.malloc(size_in_bytes + METADATA.count)
+      pointer = LibC.malloc(data_size)
       pointer.write_array_of_float(data)
       pointer
     end
@@ -41,7 +42,7 @@ module SamplePlayer
       data.unshift(0.0) # 3. eof
       data.unshift(0.0) # 2. counter
       data.unshift(@sample.num_channels.to_f) # 1. num_channels
-      data.unshift(@sample.size.to_f) # 0. size
+      data.unshift(@sample.size.to_f) # 0. sample size
       @data = pointer(data.flatten)
     end
   end

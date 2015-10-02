@@ -4,8 +4,8 @@ module SamplePlayer
 
     attr_reader :resource
 
-    def initialize(channels)
-      populate(channels)
+    def initialize(num_channels)
+      populate(num_channels)
     end
 
     def latency
