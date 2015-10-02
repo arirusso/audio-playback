@@ -44,26 +44,28 @@ module SamplePlayer
     def process(input, output, frames_per_buffer, timeInfo, statusFlags, user_data)
       #puts "--"
       #puts "Entering callback at #{Time.now.to_f}"
-      counter = user_data.get_float32(0).to_i
+      counter = user_data.get_float32(Playback::METADATA.index(:counter) * FFI::TYPE_FLOAT32.size).to_i
       #puts "Frame: #{counter}"
-      sample_size = user_data.get_float32(2 * FFI::TYPE_FLOAT32.size).to_i
+      sample_size = user_data.get_float32(Playback::METADATA.index(:size) * FFI::TYPE_FLOAT32.size).to_i
       #puts "Sample size: #{sample_size}"
+      num_channels = user_data.get_float32(Playback::METADATA.index(:num_channels) * FFI::TYPE_FLOAT32.size).to_i
+      #puts "Num Channels: #{num_channels}"
       if counter >= sample_size - frames_per_buffer
         if counter < sample_size
           frame_size = sample_size.divmod(frames_per_buffer).last
         else
-          user_data.put_float32(1, 1.0)
-          exit
+          user_data.put_float32(Playback::METADATA.index(:eof) * FFI::TYPE_FLOAT32.size, 1.0) # mark eof
+          return :paComplete
         end
       end
       frame_size ||= frames_per_buffer
       #puts "Size per buffer: #{frames_per_buffer}"
-      offset = (counter + Playback::NUM_METADATA_BYTES) * FFI::TYPE_FLOAT32.size
+      offset = (counter + Playback::METADATA.count) * FFI::TYPE_FLOAT32.size #*
       data = user_data.get_array_of_float32(offset, frame_size)
       #puts "This buffer size: #{data.size}"
       output.write_array_of_float(data)
       counter += frames_per_buffer
-      user_data.put_float32(0, counter.to_f) # mark eof
+      user_data.put_float32(Playback::METADATA.index(:counter) * FFI::TYPE_FLOAT32.size, counter.to_f) # update counter
 
       #puts "Exiting callback at #{Time.now.to_f}"
       :paContinue

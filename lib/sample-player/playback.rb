@@ -11,7 +11,7 @@ module SamplePlayer
       :frame_size => 2**12
     }.freeze
 
-    NUM_METADATA_BYTES = 3
+    METADATA = [:size, :num_channels, :counter, :eof].freeze
 
     def initialize(sample, options = {})
       @sample = sample
@@ -31,17 +31,18 @@ module SamplePlayer
     private
 
     def pointer(data)
-      pointer = LibC.malloc(size_in_bytes + NUM_METADATA_BYTES)
+      pointer = LibC.malloc(size_in_bytes + METADATA.count)
       pointer.write_array_of_float(data)
       pointer
     end
 
     def populate
       data = @sample.data
-      data.unshift(@sample.size)
-      data.unshift(0.0) # counter
-      data.unshift(0.0) # eof
-      @data = pointer(data)
+      data.unshift(0.0) # 3. eof
+      data.unshift(0.0) # 2. counter
+      data.unshift(@sample.num_channels.to_f) # 1. num_channels
+      data.unshift(@sample.size.to_f) # 0. size
+      @data = pointer(data.flatten)
     end
   end
 
