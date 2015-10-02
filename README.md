@@ -1,4 +1,4 @@
-# Sample Player
+# Audio Playback
 
 ## Installation
 
