@@ -56,6 +56,49 @@ class SamplePlayer::AudioFileTest < Minitest::Test
 
     end
 
+    context "#read" do
+
+      context "mono" do
+
+        setup do
+          @path = "test/media/mono.wav"
+          @file = SamplePlayer::AudioFile.new(@path)
+          @data = @file.read
+        end
+
+        should "populate data" do
+          refute_nil @data
+          assert @data.kind_of?(Array)
+          refute_empty @data
+          assert @data.all? { |frame| frame.kind_of?(Float) }
+          assert @data.all? { |frame| frame >= -1 }
+          assert @data.all? { |frame| frame <= 1 }
+        end
+
+      end
+
+      context "stereo" do
+
+        setup do
+          @path = "test/media/stereo.wav"
+          @file = SamplePlayer::AudioFile.new(@path)
+          @data = @file.read
+        end
+
+        should "populate data" do
+          refute_nil @data
+          assert @data.kind_of?(Array)
+          refute_empty @data
+          assert @data.all? { |frame_channels| frame_channels.kind_of?(Array) }
+          assert @data.all? { |frame_channels| frame_channels.all? { |frame| frame.kind_of?(Float) } }
+          assert @data.all? { |frame_channels| frame_channels.all? { |frame| frame >= -1 } }
+          assert @data.all? { |frame_channels| frame_channels.all? { |frame| frame <= 1 } }
+        end
+
+      end
+
+    end
+
   end
 
 end
