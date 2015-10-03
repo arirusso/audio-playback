@@ -16,11 +16,11 @@ module AudioPlayback
       end
     end
 
-    def play(sound)
-      playback = Playback.new(sound)
+    def play(playback)
       report(playback)
       open_playback(playback)
       start
+      self
     end
 
     def active?

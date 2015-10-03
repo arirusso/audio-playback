@@ -4,7 +4,7 @@ module AudioPlayback
 
     extend Forwardable
 
-    attr_reader :buffer_size, :data, :sound
+    attr_reader :buffer_size, :data, :sound, :stream
     def_delegators :@sound, :audio_file, :num_channels, :sample_rate, :size
 
     DEFAULT = {
@@ -13,11 +13,26 @@ module AudioPlayback
 
     METADATA = [:size, :num_channels, :counter, :eof].freeze
 
-    def initialize(sound, options = {})
+    def self.play(sound, output, options = {})
+      playback = new(sound, output, options)
+      playback.start
+    end
+
+    def initialize(sound, output, options = {})
       @sound = sound
       @buffer_size = options[:buffer_size] || DEFAULT[:buffer_size]
+      @stream = options[:stream] || Stream.new(output)
       populate
       report
+    end
+
+    def start
+      @stream.play(self)
+      self
+    end
+
+    def block
+      @stream.block
     end
 
     def report
