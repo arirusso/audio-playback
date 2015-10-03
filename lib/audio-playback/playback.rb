@@ -21,7 +21,8 @@ module AudioPlayback
     def initialize(sound, output, options = {})
       @sound = sound
       @buffer_size = options[:buffer_size] || DEFAULT[:buffer_size]
-      @stream = options[:stream] || Stream.new(output)
+      @output = output
+      @stream = options[:stream] || Stream.new(@output)
       populate
       report
     end
@@ -41,8 +42,12 @@ module AudioPlayback
 
     # Bytes
     def data_size
-      frames = (@sound.size * @sound.num_channels) + METADATA.count
+      frames = (@sound.size * @output.num_channels) + METADATA.count
       frames * FFI::TYPE_FLOAT32.size
+    end
+
+    def frames
+      @frames ||= ensure_structure(@sound.data.dup)
     end
 
     private
@@ -53,12 +58,45 @@ module AudioPlayback
       pointer
     end
 
-    def populate
-      data = @sound.data
+    def ensure_structure(data)
+      data = ensure_array_frames(data)
+      if @sound.num_channels == @output.num_channels
+        data
+      else
+        ensure_num_channels(data, @output.num_channels)
+      end
+    end
+
+    def ensure_num_channels(data, num)
+      data.each do |frame|
+        difference = num - frame.size
+        if difference > 0
+          frame.fill(frame.last, frame.size, difference)
+        else
+          frame.slice!(num..-1)
+        end
+      end
+    end
+
+    def ensure_array_frames(data)
+      if data.sample.kind_of?(Array)
+        data
+      else
+        data.map { |frame| Array(frame) }
+      end
+    end
+
+    def add_metadata(data)
       data.unshift(0.0) # 3. eof
       data.unshift(0.0) # 2. counter
-      data.unshift(@sound.num_channels.to_f) # 1. num_channels
+      data.unshift(@output.num_channels.to_f) # 1. num_channels
       data.unshift(@sound.size.to_f) # 0. sample size
+      data
+    end
+
+    def populate
+      data = frames
+      add_metadata(data)
       @data = pointer(data.flatten)
     end
   end

@@ -25,9 +25,9 @@ module AudioPlayback
 
   VERSION = "0.0.1"
 
-  def self.play(filename)
+  def self.play(filename, options = {})
     sound = Sound.load(filename)
-    output = Output.new(sound.num_channels)
+    output = Output.find(options[:output]) || Output.default
     Playback.play(sound, output)
   end
 
