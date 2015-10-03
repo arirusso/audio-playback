@@ -2,7 +2,7 @@ module AudioPlayback
 
   class Output
 
-    attr_reader :id, :resource
+    attr_reader :id, :name, :resource
 
     def self.all
       ensure_initialized
@@ -53,6 +53,7 @@ module AudioPlayback
       #
       @resource = FFI::PortAudio::API::PaStreamParameters.new
       @resource[:device]                    = id
+      @name = info[:name]
       @resource[:suggestedLatency]          = info[:defaultHighOutputLatency]
       @resource[:hostApiSpecificStreamInfo] = nil
       @resource[:channelCount]              = options[:num_channels] || info[:maxOutputChannels]
