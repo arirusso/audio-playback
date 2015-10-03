@@ -8,9 +8,18 @@ module AudioPlayback
       ensure_initialized
       if @devices.nil?
         count = FFI::PortAudio::API.Pa_GetDeviceCount
-        @devices = (0..count-1).to_a.map { |id| new(id) }
+        ids = (0..count-1).to_a.select { |id| output?(id) }
+        @devices = ids.map { |id| new(id) }
       end
       @devices
+    end
+
+    def self.output?(id)
+      device_info(id)[:maxOutputChannels] > 0
+    end
+
+    def self.device_info(id)
+      FFI::PortAudio::API.Pa_GetDeviceInfo(id)
     end
 
     def self.find(id)
@@ -44,7 +53,7 @@ module AudioPlayback
     private
 
     def info
-      @info ||= FFI::PortAudio::API.Pa_GetDeviceInfo(id)
+      @info ||= self.class.device_info(id)
     end
 
     def populate(id, options = {})
