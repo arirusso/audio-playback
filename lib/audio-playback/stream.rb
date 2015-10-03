@@ -10,8 +10,7 @@ module AudioPlayback
       @output = output.resource
       at_exit do
         puts "exit"
-        FFI::PortAudio::API.Pa_AbortStream(@stream.read_pointer)
-        #close
+        close
         FFI::PortAudio::API.Pa_Terminate
       end
     end
