@@ -12,7 +12,6 @@ require "unimidi"
 
 # modules
 require "audio-playback/libc"
-require "audio-playback/thread"
 
 # classes
 require "audio-playback/file"
