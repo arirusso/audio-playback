@@ -11,6 +11,7 @@ require "ruby-audio"
 require "unimidi"
 
 # modules
+require "audio-playback/device"
 require "audio-playback/libc"
 
 # classes
@@ -26,7 +27,7 @@ module AudioPlayback
 
   def self.play(filename, options = {})
     sound = Sound.load(filename)
-    output = Output.find(options[:output]) || Output.default
+    output = Output.find(options[:output]) || Device.default_output
     Playback.play(sound, output)
   end
 
