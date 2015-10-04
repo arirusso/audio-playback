@@ -30,4 +30,8 @@ module AudioPlayback
     Playback.play(sound, output)
   end
 
+  def self.ensure_initialized
+    @initialized ||= FFI::PortAudio::API.Pa_Initialize
+  end
+
 end

@@ -5,7 +5,7 @@ module AudioPlayback
     attr_reader :id, :name, :resource
 
     def self.all
-      ensure_initialized
+      AudioPlayback.ensure_initialized
       if @devices.nil?
         count = FFI::PortAudio::API.Pa_GetDeviceCount
         ids = (0..count-1).to_a.select { |id| output?(id) }
@@ -30,24 +30,20 @@ module AudioPlayback
       find(FFI::PortAudio::API.Pa_GetDefaultOutputDevice)
     end
 
-    def self.ensure_initialized
-      @initialized ||= FFI::PortAudio::API.Pa_Initialize
-    end
-
     def initialize(id, options = {})
       populate(id, options)
     end
 
     def latency
-      @latency ||= @resource[:suggestedLatency]
+      @resource[:suggestedLatency]
     end
 
     def num_channels
-      @num_channels ||= @resource[:channelCount]
+      @resource[:channelCount]
     end
 
     def id
-      @id ||= @resource[:device]
+      @resource[:device]
     end
 
     private
