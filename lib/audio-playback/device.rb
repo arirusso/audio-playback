@@ -20,12 +20,16 @@ module AudioPlayback
       FFI::PortAudio::API.Pa_GetDeviceInfo(id)
     end
 
-    def self.find(id)
+    def self.find_by_id(id)
       outputs.find { |device| [device, device.id].include?(id) }
     end
 
+    def self.find_by_name(name)
+      outputs.find { |device| device.name == name }
+    end
+
     def self.default_output
-      find(FFI::PortAudio::API.Pa_GetDefaultOutputDevice)
+      find_by_id(FFI::PortAudio::API.Pa_GetDefaultOutputDevice)
     end
 
   end

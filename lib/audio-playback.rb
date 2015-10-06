@@ -27,7 +27,7 @@ module AudioPlayback
 
   def self.play(filename, options = {})
     sound = Sound.load(filename)
-    output = Output.find(options[:output]) || Device.default_output
+    output = Output.find_by_name(options[:output]) || Output.find_by_id(options[:output]) || Device.default_output
     Playback.play(sound, output)
   end
 
