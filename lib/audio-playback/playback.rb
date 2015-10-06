@@ -11,7 +11,7 @@ module AudioPlayback
       :buffer_size => 2**12
     }.freeze
 
-    METADATA = [:size, :num_channels, :counter, :eof].freeze
+    METADATA = [:size, :num_channels, :pointer, :is_eof].freeze
 
     def self.play(sound, output, options = {})
       playback = new(sound, output, options)
@@ -87,7 +87,7 @@ module AudioPlayback
     end
 
     def add_metadata(data)
-      data.unshift(0.0) # 3. eof
+      data.unshift(0.0) # 3. is_eof
       data.unshift(0.0) # 2. counter
       data.unshift(@output.num_channels.to_f) # 1. num_channels
       data.unshift(@sound.size.to_f) # 0. sample size

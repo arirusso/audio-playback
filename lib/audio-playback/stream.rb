@@ -51,7 +51,7 @@ module AudioPlayback
     def process(input, output, frames_per_buffer, time_info, status_flags, user_data)
       #puts "--"
       #puts "Entering callback at #{Time.now.to_f}"
-      counter = user_data.get_float32(Playback::METADATA.index(:counter) * FFI::TYPE_FLOAT32.size).to_i
+      counter = user_data.get_float32(Playback::METADATA.index(:pointer) * FFI::TYPE_FLOAT32.size).to_i
       #puts "Frame: #{counter}"
       sample_size = user_data.get_float32(Playback::METADATA.index(:size) * FFI::TYPE_FLOAT32.size).to_i
       #puts "Sample size: #{sample_size}"
@@ -80,10 +80,10 @@ module AudioPlayback
       #puts "Writing to output"
       output.write_array_of_float(data)
       counter += frames_per_buffer
-      user_data.put_float32(Playback::METADATA.index(:counter) * FFI::TYPE_FLOAT32.size, counter.to_f) # update counter
+      user_data.put_float32(Playback::METADATA.index(:pointer) * FFI::TYPE_FLOAT32.size, counter.to_f) # update counter
       if is_eof
         #puts "Marking eof"
-        user_data.put_float32(Playback::METADATA.index(:eof) * FFI::TYPE_FLOAT32.size, 1.0) # mark eof
+        user_data.put_float32(Playback::METADATA.index(:is_eof) * FFI::TYPE_FLOAT32.size, 1.0) # mark eof
         :paComplete
       else
         :paContinue
