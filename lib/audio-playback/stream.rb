@@ -3,9 +3,8 @@ module AudioPlayback
   class Stream < FFI::PortAudio::Stream
 
     def initialize(output)
-      @muted = false
+      @is_muted = false
       @gain = 1.0
-      @eof = false
       @input = nil
       @output = output.resource
       at_exit do
@@ -58,7 +57,7 @@ module AudioPlayback
       #puts "Sample size: #{sample_size}"
       num_channels = user_data.get_float32(Playback::METADATA.index(:num_channels) * FFI::TYPE_FLOAT32.size).to_i
       #puts "Num Channels: #{num_channels}"
-      eof = false
+      is_eof = false
       if counter >= sample_size - frames_per_buffer
         if counter < sample_size
           buffer_size = sample_size.divmod(frames_per_buffer).last
@@ -66,7 +65,7 @@ module AudioPlayback
           difference = frames_per_buffer - buffer_size
           #puts "Adding #{difference} frames of null audio"
           extra_data = [0] * difference * num_channels
-          eof = true
+          is_eof = true
         else
           return :paAbort
         end
@@ -82,7 +81,7 @@ module AudioPlayback
       output.write_array_of_float(data)
       counter += frames_per_buffer
       user_data.put_float32(Playback::METADATA.index(:counter) * FFI::TYPE_FLOAT32.size, counter.to_f) # update counter
-      if eof
+      if is_eof
         #puts "Marking eof"
         user_data.put_float32(Playback::METADATA.index(:eof) * FFI::TYPE_FLOAT32.size, 1.0) # mark eof
         :paComplete
