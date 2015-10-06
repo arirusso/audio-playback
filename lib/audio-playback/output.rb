@@ -41,7 +41,7 @@ module AudioPlayback
       @resource = FFI::PortAudio::API::PaStreamParameters.new
       @resource[:device]                    = id
       @name = info[:name]
-      @resource[:suggestedLatency]          = info[:defaultHighOutputLatency]
+      @resource[:suggestedLatency]          = options[:latency] || info[:defaultHighOutputLatency]
       @resource[:hostApiSpecificStreamInfo] = nil
       @resource[:channelCount]              = options[:num_channels] || info[:maxOutputChannels]
       @resource[:sampleFormat]              = FFI::PortAudio::API::Float32
