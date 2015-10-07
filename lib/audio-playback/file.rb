@@ -12,8 +12,9 @@ module AudioPlayback
       @sample_rate = @file.info.samplerate
     end
 
-    def read
-      #puts "Reading audio file"
+    def read(options = {})
+      out = options[:verbose]
+      out.puts("Reading audio file") if out
       buffer = RubyAudio::Buffer.float(@size, @num_channels)
       begin
         @file.seek(0)
@@ -21,7 +22,7 @@ module AudioPlayback
         data = buffer.to_a
       rescue RubyAudio::Error
       end
-      #puts "Finished reading audio file"
+      out.puts("Finished reading audio file") if out
       data
     end
 

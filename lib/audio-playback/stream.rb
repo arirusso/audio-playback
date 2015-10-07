@@ -2,20 +2,21 @@ module AudioPlayback
 
   class Stream < FFI::PortAudio::Stream
 
-    def initialize(output)
+    def initialize(output, options = {})
       @is_muted = false
       @gain = 1.0
       @input = nil
       @output = output.resource
+      out = options[:verbose]
       at_exit do
-        puts "exit"
+        out.puts("Exit") if out
         close
         FFI::PortAudio::API.Pa_Terminate
       end
     end
 
-    def play(playback)
-      report(playback)
+    def play(playback, options = {})
+      report(playback, options[:verbose]) if options[:verbose]
       open_playback(playback)
       start
       self
@@ -43,8 +44,8 @@ module AudioPlayback
       true
     end
 
-    def report(playback)
-      puts "Playing #{playback.sound.audio_file.path} with latency: #{@output[:suggestedLatency]}"
+    def report(playback, out)
+      out.puts("Playing #{playback.sound.audio_file.path} with latency: #{@output[:suggestedLatency]}")
       self
     end
 
