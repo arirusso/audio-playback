@@ -7,16 +7,16 @@ module AudioPlayback
       @gain = 1.0
       @input = nil
       @output = output.resource
-      out = options[:verbose]
+      logger = options[:logger]
       at_exit do
-        out.puts("Exit") if out
+        logger.puts("Exit") if logger
         close
         FFI::PortAudio::API.Pa_Terminate
       end
     end
 
     def play(playback, options = {})
-      report(playback, options[:verbose]) if options[:verbose]
+      report(playback, options[:logger]) if options[:logger]
       open_playback(playback)
       start
       self
@@ -44,8 +44,8 @@ module AudioPlayback
       true
     end
 
-    def report(playback, out)
-      out.puts("Playing #{playback.sound.audio_file.path} with latency: #{@output[:suggestedLatency]}")
+    def report(playback, logger)
+      logger.puts("Playing #{playback.sound.audio_file.path} with latency: #{@output[:suggestedLatency]}")
       self
     end
 

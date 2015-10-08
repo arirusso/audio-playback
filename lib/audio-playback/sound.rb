@@ -15,14 +15,14 @@ module AudioPlayback
     def initialize(audio_file, options = {})
       @audio_file = audio_file
       populate(options)
-      report(options[:verbose]) if options[:verbose]
+      report(options[:logger]) if options[:logger]
     end
 
-    def report(out)
-      out.puts("Sound report for #{@audio_file.path}")
-      out.puts("Sample rate: #{@audio_file.sample_rate}")
-      out.puts("Channels: #{@audio_file.num_channels}")
-      out.puts("File size: #{@audio_file.size}")
+    def report(logger)
+      logger.puts("Sound report for #{@audio_file.path}")
+      logger.puts("Sample rate: #{@audio_file.sample_rate}")
+      logger.puts("Channels: #{@audio_file.num_channels}")
+      logger.puts("File size: #{@audio_file.size}")
     end
 
     private

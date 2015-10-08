@@ -24,7 +24,7 @@ module AudioPlayback
       @output = output
       @stream = options[:stream] || Stream.new(@output, options)
       populate
-      report(options[:verbose]) if options[:verbose]
+      report(options[:logger]) if options[:logger]
     end
 
     def start
@@ -36,8 +36,8 @@ module AudioPlayback
       @stream.block
     end
 
-    def report(out)
-      out.puts("Playing #{@sound.audio_file.path} with buffer size #{@buffer_size}")
+    def report(logger)
+      logger.puts("Playing #{@sound.audio_file.path} with buffer size #{@buffer_size}")
     end
 
     # Bytes
