@@ -44,11 +44,15 @@ module TestHelper
     }
   ]
 
+  def self.stub_portaudio
+    FFI::PortAudio::API.stubs(:Pa_GetDeviceCount).returns(2)
+    FFI::PortAudio::API.expects(:Pa_GetDeviceInfo).with(0).at_least_once.returns(TestHelper::OUTPUT_INFO[0])
+    FFI::PortAudio::API.expects(:Pa_GetDeviceInfo).with(1).at_least_once.returns(TestHelper::OUTPUT_INFO[1])
+    FFI::PortAudio::API.stubs(:Pa_GetDefaultOutputDevice).returns(TestHelper::DEFAULT_OUTPUT_ID)
+    FFI::PortAudio::API.stubs(:Pa_Initialize).returns(true)
+    FFI::PortAudio::API.stubs(:Pa_Terminate).returns(true)
+  end
+
 end
 
-FFI::PortAudio::API.stubs(:Pa_GetDeviceCount).returns(2)
-FFI::PortAudio::API.expects(:Pa_GetDeviceInfo).with(0).at_least_once.returns(TestHelper::OUTPUT_INFO[0])
-FFI::PortAudio::API.expects(:Pa_GetDeviceInfo).with(1).at_least_once.returns(TestHelper::OUTPUT_INFO[1])
-FFI::PortAudio::API.stubs(:Pa_GetDefaultOutputDevice).returns(TestHelper::DEFAULT_OUTPUT_ID)
-FFI::PortAudio::API.stubs(:Pa_Initialize).returns(true)
-FFI::PortAudio::API.stubs(:Pa_Terminate).returns(true)
+TestHelper.stub_portaudio
