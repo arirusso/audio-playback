@@ -68,6 +68,20 @@ class AudioPlayback::OutputTest < Minitest::Test
         @test_info = TestHelper::OUTPUT_INFO[@test_id]
       end
 
+      context "latency option" do
+
+        setup do
+          @output = AudioPlayback::Output.new(@test_id, :latency => 20)
+        end
+
+        should "return correct latency" do
+          refute_nil @output.latency
+          assert_kind_of Float, @output.latency
+          assert_equal 20, @output.latency
+        end
+
+      end
+
       context "no options" do
 
         setup do
