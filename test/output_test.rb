@@ -63,6 +63,18 @@ class AudioPlayback::OutputTest < Minitest::Test
 
     context "#latency" do
 
+      setup do
+        @test_id = (0..TestHelper::OUTPUT_INFO.size-1).to_a.sample
+        @test_info = TestHelper::OUTPUT_INFO[@test_id]
+        @output = AudioPlayback::Output.new(@test_id)
+      end
+
+      should "return correct latency" do
+        refute_nil @output.latency
+        assert_kind_of Fixnum, @output.latency
+        assert_equal @test_info[:defaultHighOutputLatency], @output.latency
+      end
+
     end
 
     context "#num_channels" do
