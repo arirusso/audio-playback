@@ -71,6 +71,17 @@ class AudioPlayback::OutputTest < Minitest::Test
 
     context "#id" do
 
+      setup do
+        @test_id = [0,1].sample
+        @output = AudioPlayback::Output.new(@test_id)
+      end
+
+      should "populate id" do
+        refute_nil @output.id
+        assert_kind_of Fixnum, @output.id
+        assert_equal @test_id, @output.id
+      end
+
     end
 
   end
