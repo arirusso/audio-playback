@@ -58,7 +58,7 @@ class AudioPlayback::OutputTest < Minitest::Test
         refute_nil @output.num_channels
         assert_kind_of Fixnum, @output.num_channels
       end
-      
+
     end
 
     context "#latency" do
@@ -66,6 +66,18 @@ class AudioPlayback::OutputTest < Minitest::Test
     end
 
     context "#num_channels" do
+
+      setup do
+        @test_id = (0..TestHelper::OUTPUT_INFO.size-1).to_a.sample
+        @test_info = TestHelper::OUTPUT_INFO[@test_id]
+        @output = AudioPlayback::Output.new(@test_id)
+      end
+
+      should "return correct num_channels" do
+        refute_nil @output.num_channels
+        assert_kind_of Fixnum, @output.num_channels
+        assert_equal @test_info[:maxOutputChannels], @output.num_channels
+      end
 
     end
 
@@ -76,7 +88,7 @@ class AudioPlayback::OutputTest < Minitest::Test
         @output = AudioPlayback::Output.new(@test_id)
       end
 
-      should "populate id" do
+      should "return correct id" do
         refute_nil @output.id
         assert_kind_of Fixnum, @output.id
         assert_equal @test_id, @output.id
