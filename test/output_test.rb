@@ -41,7 +41,8 @@ class AudioPlayback::OutputTest < Minitest::Test
     context "#populate" do
 
       setup do
-        @output = AudioPlayback::Output.new(0)
+        @id = 0
+        @output = AudioPlayback::Output.new(@id)
       end
 
       should "populate id" do
@@ -57,6 +58,12 @@ class AudioPlayback::OutputTest < Minitest::Test
       should "populate number of channels" do
         refute_nil @output.num_channels
         assert_kind_of Fixnum, @output.num_channels
+      end
+
+      should "populate name" do
+        refute_nil @output.name
+        assert_kind_of String, @output.name
+        assert_equal "Test Output #{@id+1}", @output.name
       end
 
     end
