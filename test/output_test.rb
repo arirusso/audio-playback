@@ -38,6 +38,41 @@ class AudioPlayback::OutputTest < Minitest::Test
 
     end
 
+    context "#populate" do
+
+      setup do
+        @output = AudioPlayback::Output.new(0)
+      end
+
+      should "populate id" do
+        refute_nil @output.id
+        assert_kind_of Fixnum, @output.id
+      end
+
+      should "populate latency" do
+        refute_nil @output.latency
+        assert_kind_of Numeric, @output.latency
+      end
+
+      should "populate number of channels" do
+        refute_nil @output.num_channels
+        assert_kind_of Fixnum, @output.num_channels
+      end
+
+    end
+
+    context "#latency" do
+
+    end
+
+    context "#num_channels" do
+
+    end
+
+    context "#id" do
+
+    end
+
   end
 
 end
