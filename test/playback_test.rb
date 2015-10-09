@@ -52,6 +52,16 @@ class AudioPlayback::PlaybackTest < Minitest::Test
 
     context "#report" do
 
+      setup do
+        @logger = Object.new
+        @playback = AudioPlayback::Playback.new(@sound, @output)
+        @logger.expects(:puts).once
+      end
+
+      should "do logging" do
+        assert @playback.report(@logger)
+      end
+
     end
 
     context "#data_size" do
