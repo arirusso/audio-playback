@@ -4,6 +4,47 @@ class AudioPlayback::PlaybackTest < Minitest::Test
 
   context "Playback" do
 
+    context ".play" do
+
+      setup do
+        @path = "test/media/1-mono-44100.wav"
+        @sound = AudioPlayback::Sound.load(@path)
+        @output = AudioPlayback::Output.by_id(0)
+        AudioPlayback::Stream.any_instance.expects(:start).once.returns(true)
+      end
+
+      teardown do
+        AudioPlayback::Stream.any_instance.unstub(:start)
+      end
+
+      should "start playback" do
+        @playback = AudioPlayback::Playback.play(@sound, @output)
+        refute_nil @playback
+        assert_kind_of AudioPlayback::Playback, @playback
+      end
+
+    end
+
+    context "#start" do
+
+    end
+
+    context "#block" do
+
+    end
+
+    context "#report" do
+
+    end
+
+    context "#data_size" do
+
+    end
+
+    context "#frames" do
+
+    end
+
     context "#ensure_structure" do
 
       context "sound has same number of channels as output" do
