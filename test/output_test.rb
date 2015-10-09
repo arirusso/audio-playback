@@ -18,21 +18,21 @@ class AudioPlayback::OutputTest < Minitest::Test
 
     end
 
-    context ".find_by_id" do
+    context ".by_id" do
 
       should "return an output with the given id" do
         @outputs.each do |output|
-          assert_equal output, AudioPlayback::Output.find_by_id(output.id)
+          assert_equal output, AudioPlayback::Output.by_id(output.id)
         end
       end
 
     end
 
-    context ".find_by_name" do
+    context ".by_name" do
 
       should "return an output with the given name" do
         @outputs.each do |output|
-          assert_equal output, AudioPlayback::Output.find_by_name(output.name)
+          assert_equal output, AudioPlayback::Output.by_name(output.name)
         end
       end
 

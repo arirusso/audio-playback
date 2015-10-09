@@ -8,12 +8,12 @@ module AudioPlayback
       Device.outputs
     end
 
-    def self.find_by_id(id)
-      Device.find_by_id(id)
+    def self.by_id(id)
+      Device.by_id(id)
     end
 
-    def self.find_by_name(name)
-      Device.find_by_name(name)
+    def self.by_name(name)
+      Device.by_name(name)
     end
 
     def initialize(id, options = {})
