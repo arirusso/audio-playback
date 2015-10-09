@@ -52,11 +52,11 @@ module AudioPlayback
     def process(input, output, frames_per_buffer, time_info, status_flags, user_data)
       #puts "--"
       #puts "Entering callback at #{Time.now.to_f}"
-      counter = user_data.get_float32(Playback::METADATA.index(:pointer) * FFI::TYPE_FLOAT32.size).to_i
+      counter = user_data.get_float32(Playback::METADATA.index(:pointer) * Playback::FRAME_SIZE).to_i
       #puts "Frame: #{counter}"
-      sample_size = user_data.get_float32(Playback::METADATA.index(:size) * FFI::TYPE_FLOAT32.size).to_i
+      sample_size = user_data.get_float32(Playback::METADATA.index(:size) * Playback::FRAME_SIZE).to_i
       #puts "Sample size: #{sample_size}"
-      num_channels = user_data.get_float32(Playback::METADATA.index(:num_channels) * FFI::TYPE_FLOAT32.size).to_i
+      num_channels = user_data.get_float32(Playback::METADATA.index(:num_channels) * Playback::FRAME_SIZE).to_i
       #puts "Num Channels: #{num_channels}"
       is_eof = false
       if counter >= sample_size - frames_per_buffer
@@ -73,7 +73,7 @@ module AudioPlayback
       end
       buffer_size ||= frames_per_buffer
       #puts "Size per buffer per channel: #{frames_per_buffer}"
-      offset = ((counter * num_channels) + Playback::METADATA.count) * FFI::TYPE_FLOAT32.size
+      offset = ((counter * num_channels) + Playback::METADATA.count) * Playback::FRAME_SIZE
       #puts "Starting at location: #{offset}"
       data = user_data.get_array_of_float32(offset, buffer_size * num_channels)
       data += extra_data unless extra_data.nil?
@@ -81,10 +81,10 @@ module AudioPlayback
       #puts "Writing to output"
       output.write_array_of_float(data)
       counter += frames_per_buffer
-      user_data.put_float32(Playback::METADATA.index(:pointer) * FFI::TYPE_FLOAT32.size, counter.to_f) # update counter
+      user_data.put_float32(Playback::METADATA.index(:pointer) * Playback::FRAME_SIZE, counter.to_f) # update counter
       if is_eof
         #puts "Marking eof"
-        user_data.put_float32(Playback::METADATA.index(:is_eof) * FFI::TYPE_FLOAT32.size, 1.0) # mark eof
+        user_data.put_float32(Playback::METADATA.index(:is_eof) * Playback::FRAME_SIZE, 1.0) # mark eof
         :paComplete
       else
         :paContinue

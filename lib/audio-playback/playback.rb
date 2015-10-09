@@ -11,6 +11,8 @@ module AudioPlayback
       :buffer_size => 2**12
     }.freeze
 
+    FRAME_SIZE = FFI::TYPE_FLOAT32.size
+
     METADATA = [:size, :num_channels, :pointer, :is_eof].freeze
 
     def self.play(sound, output, options = {})
@@ -44,7 +46,7 @@ module AudioPlayback
     # Bytes
     def data_size
       frames = (@sound.size * @output.num_channels) + METADATA.count
-      frames * FFI::TYPE_FLOAT32.size
+      frames * FRAME_SIZE.size
     end
 
     def frames
