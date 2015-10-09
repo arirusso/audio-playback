@@ -4,12 +4,15 @@ class AudioPlayback::PlaybackTest < Minitest::Test
 
   context "Playback" do
 
+    setup do
+      @path = "test/media/1-mono-44100.wav"
+      @sound = AudioPlayback::Sound.load(@path)
+      @output = AudioPlayback::Output.by_id(0)
+    end
+
     context ".play" do
 
       setup do
-        @path = "test/media/1-mono-44100.wav"
-        @sound = AudioPlayback::Sound.load(@path)
-        @output = AudioPlayback::Output.by_id(0)
         AudioPlayback::Stream.any_instance.expects(:start).once.returns(true)
       end
 
@@ -26,6 +29,20 @@ class AudioPlayback::PlaybackTest < Minitest::Test
     end
 
     context "#start" do
+
+      setup do
+        @playback = AudioPlayback::Playback.new(@sound, @output)
+        AudioPlayback::Stream.any_instance.expects(:start).once.returns(true)
+      end
+
+      teardown do
+        AudioPlayback::Stream.any_instance.unstub(:start)
+      end
+
+      should "start playback" do
+        @result = @playback.start
+        assert_kind_of AudioPlayback::Playback, @result
+      end
 
     end
 
