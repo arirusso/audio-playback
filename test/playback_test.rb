@@ -66,6 +66,27 @@ class AudioPlayback::PlaybackTest < Minitest::Test
 
     context "#data_size" do
 
+      setup do
+        @playback = AudioPlayback::Playback.new(@sound, @output)
+        @size = @playback.data_size
+        @metadata_size = AudioPlayback::Playback::METADATA.count * AudioPlayback::Playback::FRAME_SIZE.size
+        @sound_data_size = (@sound.size * @sound.num_channels) * AudioPlayback::Playback::FRAME_SIZE.size
+        @total_size = @metadata_size + @sound_data_size
+      end
+
+      should "have data size" do
+        refute_nil @size
+        assert @size > 0
+      end
+
+      should "be larger than sound file data size" do
+        assert @size > @sound_data_size
+      end
+
+      should "be equal to sound file plus metadata size" do
+        assert_equal @total_size, @size
+      end
+
     end
 
     context "#frames" do
