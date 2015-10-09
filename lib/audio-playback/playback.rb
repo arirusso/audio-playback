@@ -38,6 +38,7 @@ module AudioPlayback
 
     def report(logger)
       logger.puts("Playing #{@sound.audio_file.path} with buffer size #{@buffer_size}")
+      true
     end
 
     # Bytes
