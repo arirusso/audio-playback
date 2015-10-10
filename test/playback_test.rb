@@ -71,6 +71,10 @@ class AudioPlayback::PlaybackTest < Minitest::Test
         @logger.expects(:puts).once
       end
 
+      teardown do
+        @logger.unstub(:puts)
+      end
+
       should "do logging" do
         assert @playback.report(@logger)
       end
