@@ -56,6 +56,25 @@ class AudioPlayback::SoundTest < Minitest::Test
 
     end
 
+    context "#report" do
+
+      setup do
+        @logger = Object.new
+        @path = "test/media/1-mono-44100.wav"
+        @sound = AudioPlayback::Sound.load(@path)
+        @logger.expects(:puts).times(4)
+      end
+
+      teardown do
+        @logger.unstub(:puts)
+      end
+
+      should "do logging" do
+        assert @sound.report(@logger)
+      end
+
+    end
+
   end
 
 end
