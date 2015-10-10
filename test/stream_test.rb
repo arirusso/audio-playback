@@ -27,6 +27,28 @@ class AudioPlayback::StreamTest < Minitest::Test
 
     end
 
+    context "#play" do
+
+      setup do
+        @stream = AudioPlayback::Stream.new(@output)
+        @playback = AudioPlayback::Playback.new(@sound, @output)
+        @stream.expects(:report).once
+        @stream.expects(:open_playback).once
+        @stream.expects(:start).once
+      end
+
+      teardown do
+        @stream.unstub(:report)
+        @stream.unstub(:open_playback)
+        @stream.unstub(:start)
+      end
+
+      should "return self" do
+        assert_equal @stream, @stream.play(@playback)
+      end
+
+    end
+
   end
 
 end
