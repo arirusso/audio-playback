@@ -35,12 +35,15 @@ module AudioPlayback
     private
 
     def initialize_exit_callback(options = {})
+      at_exit { exit_callback(options) }
+    end
+
+    def exit_callback(options = {})
       logger = options[:logger]
-      at_exit do
-        logger.puts("Exit") if logger
-        close
-        FFI::PortAudio::API.Pa_Terminate
-      end
+      logger.puts("Exit") if logger
+      close
+      FFI::PortAudio::API.Pa_Terminate
+      true
     end
 
     def open_playback(playback)
