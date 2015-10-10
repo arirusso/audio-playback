@@ -7,12 +7,7 @@ module AudioPlayback
       @gain = 1.0
       @input = nil
       @output = output.resource
-      logger = options[:logger]
-      at_exit do
-        logger.puts("Exit") if logger
-        close
-        FFI::PortAudio::API.Pa_Terminate
-      end
+      initialize_exit_callback(:logger => options[:logger])
     end
 
     def play(playback, options = {})
@@ -38,6 +33,15 @@ module AudioPlayback
     end
 
     private
+
+    def initialize_exit_callback(options = {})
+      logger = options[:logger]
+      at_exit do
+        logger.puts("Exit") if logger
+        close
+        FFI::PortAudio::API.Pa_Terminate
+      end
+    end
 
     def open_playback(playback)
       open(@input, @output, playback.sample_rate.to_i, playback.buffer_size, FFI::PortAudio::API::NoFlag, playback.data)
