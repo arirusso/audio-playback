@@ -91,6 +91,24 @@ class AudioPlayback::PlaybackTest < Minitest::Test
 
     context "#frames" do
 
+      setup do
+        @playback = AudioPlayback::Playback.new(@sound, @output)
+      end
+
+      should "have the correct number of frames" do
+        assert_equal @sound.size + AudioPlayback::Playback::METADATA.size, @playback.frames.size
+      end
+
+      should "be the correct format" do
+        assert @playback.frames.all? do |frame|
+          if frame.kind_of?(Array)
+            frame.all? { |num| num.is_a?(Float) }
+          else
+            frame.is_a?(Float)
+          end
+        end
+      end
+
     end
 
     context "#ensure_structure" do
