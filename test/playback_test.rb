@@ -48,6 +48,19 @@ class AudioPlayback::PlaybackTest < Minitest::Test
 
     context "#block" do
 
+      setup do
+        @playback = AudioPlayback::Playback.new(@sound, @output)
+        AudioPlayback::Stream.any_instance.expects(:block).once.returns(true)
+      end
+
+      teardown do
+        AudioPlayback::Stream.any_instance.unstub(:block)
+      end
+
+      should "defer to stream" do
+        assert @playback.block
+      end
+
     end
 
     context "#report" do
