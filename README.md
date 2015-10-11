@@ -23,11 +23,11 @@ Or if you're using Bundler, add this to your Gemfile
 
 #### options:
 
-* -l latency
-* -b buffer size eg 2048
-* -c num channels (must be equal or less to what the output supports)
-* -o output id or name
-* -v verbose output
+* *-l* latency in millis
+* *-b* buffer size eg 2048
+* *-c* num channels (must be equal or less to what the output supports)
+* *-o* output id or name
+* *-v* verbose
 
 #### example:
 
