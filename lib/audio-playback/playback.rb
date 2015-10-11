@@ -4,8 +4,8 @@ module AudioPlayback
 
     extend Forwardable
 
-    attr_reader :buffer_size, :data, :sound, :stream
-    def_delegators :@sound, :audio_file, :num_channels, :sample_rate, :size
+    attr_reader :buffer_size, :data, :num_channels, :sound, :stream
+    def_delegators :@sound, :audio_file, :sample_rate, :size
 
     DEFAULT = {
       :buffer_size => 2**12
@@ -25,7 +25,7 @@ module AudioPlayback
       @buffer_size = options[:buffer_size] || DEFAULT[:buffer_size]
       @output = output
       @stream = options[:stream] || Stream.new(@output, options)
-      populate
+      populate(options)
       report(options[:logger]) if options[:logger]
     end
 
@@ -45,7 +45,7 @@ module AudioPlayback
 
     # Bytes
     def data_size
-      frames = (@sound.size * @output.num_channels) + METADATA.count
+      frames = (@sound.size * @num_channels) + METADATA.count
       frames * FRAME_SIZE.size
     end
 
@@ -63,10 +63,14 @@ module AudioPlayback
 
     def ensure_structure(data)
       data = ensure_array_frames(data)
-      if @sound.num_channels == @output.num_channels
+      if @sound.num_channels == @num_channels
         data
       else
-        ensure_num_channels(data, @output.num_channels)
+        ensure_num_channels(data, @num_channels)
+        if @num_channels != @output.num_channels
+          ensure_num_channels(data, @output.num_channels)
+        end
+        data
       end
     end
 
@@ -97,7 +101,22 @@ module AudioPlayback
       data
     end
 
-    def populate
+    def populate_num_channels(options = {})
+      @num_channels = if options[:num_channels].nil?
+        @output.num_channels
+      else
+        requested_channels = options[:num_channels].to_i
+        if requested_channels > @output.num_channels
+          raise "#{@output.num_channels} channels available on #{@output.name} output"
+          exit
+        else
+          requested_channels
+        end
+      end
+    end
+
+    def populate(options = {})
+      populate_num_channels(options)
       data = frames
       add_metadata(data)
       @data = pointer(data.flatten)

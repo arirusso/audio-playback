@@ -43,19 +43,12 @@ module AudioPlayback
       AudioPlayback.ensure_initialized
       #
       @resource = FFI::PortAudio::API::PaStreamParameters.new
-      @resource[:device]                    = id
+      @resource[:device] = id
       @name = info[:name]
-      @resource[:suggestedLatency]          = options[:latency] || info[:defaultHighOutputLatency]
+      @resource[:suggestedLatency] = options[:latency] || info[:defaultHighOutputLatency]
       @resource[:hostApiSpecificStreamInfo] = nil
-      max_channels = info[:maxOutputChannels]
-      @resource[:channelCount] = if options[:num_channels].nil?
-        max_channels
-      elsif options[:num_channels] > max_channels
-        raise "#{max_channels} channels available on #{@name} output"
-      else
-        [options[:num_channels], max_channels].compact.min
-      end
-      @resource[:sampleFormat]              = FFI::PortAudio::API::Float32
+      @resource[:channelCount] = info[:maxOutputChannels]
+      @resource[:sampleFormat] = FFI::PortAudio::API::Float32
       @resource
     end
 
