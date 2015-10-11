@@ -1,13 +1,15 @@
 #!/usr/bin/env ruby
 $LOAD_PATH.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 
-# playback something.wav -b 2048 -c 1 -o
+# playback [filename] [options]
+#
 # options:
 # -l latency
 # -b buffer size eg 2048
 # -c num channels (must be equal or less to what the output supports)
 # -o output id or name
 # -v verbose output
+#
 
 require "optparse"
 require "audio-playback"
@@ -40,13 +42,13 @@ OptionParser.new do |opts|
   end
 
   opts.on_tail("-h", "--help", "Show this message") do
-    puts opts
+    puts(opts)
     exit
   end
 
   # Another typical switch to print the version.
   opts.on_tail("--version", "Show version") do
-    puts ::Version.join('.')
+    puts AudioPlayback::Version.join('.')
     exit
   end
 
@@ -56,8 +58,6 @@ OptionParser.new do |opts|
   end
 
 end.parse!
-
-puts options
 
 playback = AudioPlayback.play(ARGV[0], options)
 playback.block
