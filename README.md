@@ -17,9 +17,28 @@ Or if you're using Bundler, add this to your Gemfile
 
 ## Usage
 
-From the command line
+### Command line
 
-    playback something.wav
+`playback [filename] [options]`
+
+#### options:
+
+* -l latency
+* -b buffer size eg 2048
+* -c num channels (must be equal or less to what the output supports)
+* -o output id or name
+* -v verbose output
+
+#### example:
+
+`playback test/media/1-stereo-44100.wav -v -c 1`
+
+### Ruby
+
+```ruby
+playback = AudioPlayback.play("test/media/1-stereo-44100.wav", options[:num_channels] => 1)
+playback.block
+```
 
 ## License
 
