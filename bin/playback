@@ -1,0 +1,63 @@
+#!/usr/bin/env ruby
+$LOAD_PATH.unshift File.join(File.dirname(__FILE__), '..', 'lib')
+
+# playback something.wav -b 2048 -c 1 -o
+# options:
+# -l latency
+# -b buffer size eg 2048
+# -c num channels (must be equal or less to what the output supports)
+# -o output id or name
+# -v verbose output
+
+require "optparse"
+require "audio-playback"
+
+options = {}
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: playback [file] [options]"
+  opts.separator ""
+  opts.separator "Specific options:"
+
+  opts.on("-b", "--buffer-size [bytes]", Integer, "Buffer size") do |buffer_size|
+    options[:buffer_size] = buffer_size
+  end
+
+  opts.on("-c", "--num-channels [number]", Integer, "Number of channels") do |num_channels|
+    options[:num_channels] = num_channels
+  end
+
+  opts.on("-l", "--latency [millis]", Float, "Latency") do |latency|
+    options[:latency] = latency
+  end
+
+  opts.on("-o", "--output [name or id]", String, "Output to playback with") do |output|
+    options[:output] = output
+  end
+
+  opts.on("-v", "--verbose", "Run verbosely") do |verbose|
+    options[:logger] = $> if verbose
+  end
+
+  opts.on_tail("-h", "--help", "Show this message") do
+    puts opts
+    exit
+  end
+
+  # Another typical switch to print the version.
+  opts.on_tail("--version", "Show version") do
+    puts ::Version.join('.')
+    exit
+  end
+
+  if ARGV.empty?
+    puts(opts)
+    exit
+  end
+
+end.parse!
+
+puts options
+
+playback = AudioPlayback.play(ARGV[0], options)
+playback.block
