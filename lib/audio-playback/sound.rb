@@ -7,17 +7,28 @@ module AudioPlayback
     attr_reader :audio_file, :data, :size
     def_delegators :@audio_file, :num_channels, :sample_rate
 
-    def self.load(file_path, options = {})
-      file = AudioPlayback::File.new(file_path)
+    # Load a sound from the given file path
+    # @param [::File, String] file_or_path
+    # @param [Hash] options
+    # @option options [IO] logger
+    # @return [Sound]
+    def self.load(file_or_path, options = {})
+      file = AudioPlayback::File.new(file_or_path)
       new(file, options)
     end
 
+    # @param [AudioPlayback::File] audio_file
+    # @param [Hash] options
+    # @option options [IO] logger
     def initialize(audio_file, options = {})
       @audio_file = audio_file
       populate(options)
       report(options[:logger]) if options[:logger]
     end
 
+    # Log a report about the sound
+    # @param [IO] logger
+    # @return [Boolean]
     def report(logger)
       logger.puts("Sound report for #{@audio_file.path}")
       logger.puts("  Sample rate: #{@audio_file.sample_rate}")

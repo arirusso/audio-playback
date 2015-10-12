@@ -2,6 +2,9 @@ module AudioPlayback
 
   class Stream < FFI::PortAudio::Stream
 
+    # @param [Output] output
+    # @param [Hash] options
+    # @option options [IO] logger
     def initialize(output, options = {})
       @is_muted = false
       @gain = 1.0
@@ -10,6 +13,11 @@ module AudioPlayback
       initialize_exit_callback(:logger => options[:logger])
     end
 
+    # Perform the given playback
+    # @param [Playback] playback
+    # @param [Hash] options
+    # @option options [IO] logger
+    # @return [Stream]
     def play(playback, options = {})
       report(playback, options[:logger]) if options[:logger]
       open_playback(playback)
@@ -17,10 +25,14 @@ module AudioPlayback
       self
     end
 
+    # Is the stream active?
+    # @return [Boolean]
     def active?
       FFI::PortAudio::API.Pa_IsStreamActive(@stream.read_pointer) == 1
     end
 
+    # Block process until the current playback finishes
+    # @return [Boolean]
     def block
       while active?
         sleep(0.0001)

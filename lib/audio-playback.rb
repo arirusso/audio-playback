@@ -29,7 +29,7 @@ module AudioPlayback
   VERSION = "0.0.1"
 
   # Convenience method to play an audio file
-  # @param [File, String] file_path
+  # @param [::File, String] file_path
   # @param [Hash] options
   # @option options [Fixnum] :buffer_size Buffer size in bytes.  Defaults to 4096
   # @option options [Array<Fixnum>, Fixnum] :channels Output audio to the given channel(s).  Eg `:channels => [0,1]` will direct the audio to channels 0 and 1. Defaults to use all available channels

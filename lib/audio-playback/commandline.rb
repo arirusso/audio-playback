@@ -1,5 +1,6 @@
 module AudioPlayback
 
+  # Using the AudioPlayback module from the command line
   module Commandline
 
     OPTIONS = {

@@ -1,5 +1,6 @@
 module AudioPlayback
 
+  # Action of playing back an audio file
   class Playback
 
     extend Forwardable
@@ -15,11 +16,26 @@ module AudioPlayback
 
     METADATA = [:size, :num_channels, :pointer, :is_eof].freeze
 
+    # @param [Sound] sound
+    # @param [Output] output
+    # @param [Hash] options
+    # @option options [Fixnum] :buffer_size
+    # @option options [Array<Fixnum>, Fixnum] :channels
+    # @option options [IO] :logger
+    # @option options [Stream] :stream
+    # @return [Playback]
     def self.play(sound, output, options = {})
       playback = new(sound, output, options)
       playback.start
     end
 
+    # @param [Sound] sound
+    # @param [Output] output
+    # @param [Hash] options
+    # @option options [Fixnum] :buffer_size
+    # @option options [Array<Fixnum>, Fixnum] :channels
+    # @option options [IO] :logger
+    # @option options [Stream] :stream
     def initialize(sound, output, options = {})
       @sound = sound
       @buffer_size = options[:buffer_size] || DEFAULT[:buffer_size]
@@ -29,15 +45,22 @@ module AudioPlayback
       report(options[:logger]) if options[:logger]
     end
 
+    # Start playback
+    # @return [Playback]
     def start
       @stream.play(self)
       self
     end
 
+    # Block process until playback finishes
+    # @return [Stream]
     def block
       @stream.block
     end
 
+    # Log a report about playback
+    # @param [IO] logger
+    # @return [Boolean]
     def report(logger)
       logger.puts("Playback report for #{@sound.audio_file.path}")
       logger.puts("  Number of channels: #{@num_channels}")
@@ -47,12 +70,15 @@ module AudioPlayback
       true
     end
 
-    # Bytes
+    # Total size of the playback's sound frames in bytes
+    # @return [Fixnum]
     def data_size
       frames = (@sound.size * @num_channels) + METADATA.count
       frames * FRAME_SIZE.size
     end
 
+    # Sound frames
+    # @return [Array<Array<Float>>]
     def frames
       @frames ||= ensure_structure(@sound.data.dup)
     end
