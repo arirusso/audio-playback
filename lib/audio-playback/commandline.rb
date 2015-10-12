@@ -26,7 +26,7 @@ module AudioPlayback
 
       :latency => {
         :short => "-l",
-        :long => "--latency [millis]",
+        :long => "--latency [seconds]",
         :type => Float,
         :name => "Latency"
       },
