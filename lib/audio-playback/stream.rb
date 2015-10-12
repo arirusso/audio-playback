@@ -54,7 +54,6 @@ module AudioPlayback
     end
 
     def report(playback, logger)
-      logger.puts("Playing #{playback.sound.audio_file.path} with latency: #{@output[:suggestedLatency]}")
       self
     end
 

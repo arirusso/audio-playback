@@ -20,9 +20,9 @@ module AudioPlayback
 
     def report(logger)
       logger.puts("Sound report for #{@audio_file.path}")
-      logger.puts("Sample rate: #{@audio_file.sample_rate}")
-      logger.puts("Channels: #{@audio_file.num_channels}")
-      logger.puts("File size: #{@audio_file.size}")
+      logger.puts("  Sample rate: #{@audio_file.sample_rate}")
+      logger.puts("  Channels: #{@audio_file.num_channels}")
+      logger.puts("  File size: #{@audio_file.size}")
       true
     end
 

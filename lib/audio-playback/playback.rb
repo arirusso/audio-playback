@@ -39,7 +39,11 @@ module AudioPlayback
     end
 
     def report(logger)
-      logger.puts("Playing #{@sound.audio_file.path} with buffer size #{@buffer_size}")
+      logger.puts("Playback report for #{@sound.audio_file.path}")
+      logger.puts("  Number of channels: #{@num_channels}")
+      logger.puts("  Direct audio to channels #{@to_channels.to_s}") unless @to_channels.nil?
+      logger.puts("  Buffer size: #{@buffer_size}")
+      logger.puts("  Latency: #{@output.latency}")
       true
     end
 

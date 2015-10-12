@@ -68,7 +68,7 @@ class AudioPlayback::PlaybackTest < Minitest::Test
       setup do
         @logger = Object.new
         @playback = AudioPlayback::Playback.new(@sound, @output)
-        @logger.expects(:puts).once
+        @logger.expects(:puts).at_least_once
       end
 
       teardown do
