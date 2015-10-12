@@ -42,8 +42,16 @@ Or if you're using Bundler, add this to your Gemfile
 ### With Ruby
 
 ```ruby
-playback = AudioPlayback.play("test/media/1-stereo-44100.wav", options[:channels] => [0,1])
+require "audio-playback"
+
+options = {
+  :channels => [0,1],
+  :latency => 1
+}
+
+playback = AudioPlayback.play("test/media/1-stereo-44100.wav", options)
 playback.block
+
 ```
 
 #### options:
