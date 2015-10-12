@@ -110,50 +110,15 @@ class AudioPlayback::OutputTest < Minitest::Test
       setup do
         @test_id = (0..TestHelper::OUTPUT_INFO.size-1).to_a.sample
         @test_info = TestHelper::OUTPUT_INFO[@test_id]
+        @output = AudioPlayback::Output.new(@test_id)
       end
 
-      context "num_channels option" do
-
-        context "valid" do
-
-          setup do
-            @output = AudioPlayback::Output.new(@test_id, :num_channels => 1)
-          end
-
-          should "return correct num_channels" do
-            refute_nil @output.num_channels
-            assert_kind_of Fixnum, @output.num_channels
-            assert_equal 1, @output.num_channels
-          end
-
-        end
-
-        context "invalid" do
-
-          should "raise exception" do
-            assert_raises(RuntimeError) do
-              @output = AudioPlayback::Output.new(@test_id, :num_channels => @test_info[:maxOutputChannels] + 20)
-            end
-          end
-
-        end
-
+      should "return correct num_channels" do
+        refute_nil @output.num_channels
+        assert_kind_of Fixnum, @output.num_channels
+        assert_equal @test_info[:maxOutputChannels], @output.num_channels
       end
-
-      context "no options" do
-
-        setup do
-          @output = AudioPlayback::Output.new(@test_id)
-        end
-
-        should "return correct num_channels" do
-          refute_nil @output.num_channels
-          assert_kind_of Fixnum, @output.num_channels
-          assert_equal @test_info[:maxOutputChannels], @output.num_channels
-        end
-
-      end
-
+    
     end
 
     context "#id" do
