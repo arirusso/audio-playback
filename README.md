@@ -1,6 +1,6 @@
 # Audio Playback
 
-Play audio files at the command line or with Ruby
+Play audio files at the command line or using Ruby
 
 ## Installation
 
@@ -25,13 +25,13 @@ Or if you're using Bundler, add this to your Gemfile
 
 #### options:
 
-* *-l* Latency in seconds
+* *-l* Latency in seconds.  Defaults to use the default latency for the selected output device
 
-* *-b* Buffer size eg 2048
+* *-b* Buffer size in bytes eg 2048.  Defaults to 4096
+* 
+* *-c* Output audio to the given channel(s).  Eg `-c 0,1` will direct audio to channels 0 and 1.  Defaults to use all available channels
 
-* *-c* Output to the given channel(s).  Eg `-c 0,1` will direct the audio to channels 0 and 1
-
-* *-o* Output device id or name
+* *-o* Output device id or name.  Defaults to the system default
 
 * *-v* Verbose
 
@@ -48,15 +48,15 @@ playback.block
 
 #### options:
 
-* `:buffer_size` Buffer size eg 2048
+* `:buffer_size` Buffer size in bytes eg 2048.  Defaults to 4096
 
-* `:channels` Output to the given channel(s).  Eg `:channels => [0,1]` will direct the audio to channels 0 and 1
+* `:channels` Output audio to the given channel(s).  Eg `:channels => [0,1]` will direct the audio to channels 0 and 1. Defaults to use all available channels
 
-* `:latency` Latency in seconds
+* `:latency` Latency in seconds.  Defaults to use the default latency for the selected output device
 
 * `:logger` Logger object
 
-* `:output_device` Output id or name
+* `:output_device` Output device id or name
 
 ## License
 

@@ -1,21 +1,24 @@
 #!/usr/bin/env ruby
 $LOAD_PATH.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 
+#
 # ## Usage
 #
 # `playback [filename] [options]`
 #
 # #### options:
 #
-# * *-l* Latency in seconds
+# * *-l* Latency in seconds.  Defaults to use the default latency for the selected output device
 #
-# * *-b* Buffer size eg 2048
+# * *-b* Buffer size in bytes eg 2048.  Defaults to 4096
+# *
+# * *-c* Output audio to the given channel(s).  Eg `-c 0,1` will direct audio to channels 0 and 1.  Defaults to use all available channels
 #
-# * *-c* Output to the given channel(s).  Eg `-c 0,1` will direct the audio to channels 0 and 1
-# 
-# * *-o* Output device id or name
+# * *-o* Output device id or name.  Defaults to the system default
 #
 # * *-v* Verbose
+#
+#
 
 require "audio-playback"
 require "audio-playback/commandline"

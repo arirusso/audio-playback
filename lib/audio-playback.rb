@@ -1,7 +1,11 @@
+#
 # AudioPlayback
+# Play audio files at the command line or with Ruby
 #
 # (c)2015 Ari Russo
 # Apache 2.0 License
+# https://github.com/arirusso/audio-playback
+#
 
 # libs
 require "ffi-portaudio"
