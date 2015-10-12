@@ -2,7 +2,9 @@ module AudioPlayback
 
   module Device
 
-    def self.outputs
+    extend self
+
+    def outputs
       AudioPlayback.ensure_initialized
       if @devices.nil?
         count = FFI::PortAudio::API.Pa_GetDeviceCount
@@ -12,25 +14,25 @@ module AudioPlayback
       @devices
     end
 
-    def self.by_id(id)
+    def by_id(id)
       outputs.find { |device| [device, device.id].include?(id) }
     end
 
-    def self.by_name(name)
+    def by_name(name)
       outputs.find { |device| device.name == name }
     end
 
-    def self.default_output
+    def default_output
       by_id(FFI::PortAudio::API.Pa_GetDefaultOutputDevice)
     end
 
     private
 
-    def self.output?(id)
+    def output?(id)
       device_info(id)[:maxOutputChannels] > 0
     end
 
-    def self.device_info(id)
+    def device_info(id)
       FFI::PortAudio::API.Pa_GetDeviceInfo(id)
     end
 
