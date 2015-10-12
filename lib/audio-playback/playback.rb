@@ -129,10 +129,13 @@ module AudioPlayback
     def validate_requested_channels(num_channels, to_channels)
       if !num_channels.nil? && !to_channels.nil? && to_channels.count != num_channels
         raise "Conflict in channels specified"
+        false
       end
       if num_channels > @output.num_channels
         raise "Only #{@output.num_channels} channels available on #{@output.name} output"
+        false
       end
+      true
     end
 
     def populate_requested_channels(options = {})
