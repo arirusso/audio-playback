@@ -1,5 +1,7 @@
 # Audio Playback
 
+Play audio files at the command line or with Ruby
+
 ## Installation
 
 These packages must be installed first:
@@ -40,7 +42,7 @@ Or if you're using Bundler, add this to your Gemfile
 ### With Ruby
 
 ```ruby
-playback = AudioPlayback.play("test/media/1-stereo-44100.wav", options[:num_channels] => 1)
+playback = AudioPlayback.play("test/media/1-stereo-44100.wav", options[:channels] => [0,1])
 playback.block
 ```
 
