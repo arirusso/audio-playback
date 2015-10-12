@@ -7,6 +7,7 @@ group :test do
   gem "shoulda-context", "~> 1.2", ">= 1.2.1"
 end
 
+gem "ffi-libc", "~> 0.1", ">= 0.1.0"
 gem "ffi-portaudio", "~> 0.1", ">= 0.1.2"
 gem "midi-eye", "~> 0.3", ">= 0.3.9"
 gem "midi-message", "~> 0.4", ">= 0.4.7"

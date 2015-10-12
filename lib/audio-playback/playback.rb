@@ -60,7 +60,7 @@ module AudioPlayback
     private
 
     def pointer(data)
-      pointer = LibC.malloc(data_size)
+      pointer = FFI::LibC.malloc(data_size)
       pointer.write_array_of_float(data)
       pointer
     end

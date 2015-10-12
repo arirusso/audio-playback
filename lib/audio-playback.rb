@@ -8,6 +8,7 @@
 #
 
 # libs
+require "ffi/libc"
 require "ffi-portaudio"
 require "forwardable"
 require "midi-eye"
@@ -16,7 +17,6 @@ require "unimidi"
 
 # modules
 require "audio-playback/device"
-require "audio-playback/libc"
 
 # classes
 require "audio-playback/file"
