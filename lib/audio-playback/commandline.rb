@@ -35,7 +35,7 @@ module AudioPlayback
         :short => "-o",
         :long => "--output [name or id]",
         :type => String,
-        :name => "Output to playback with"
+        :name => "Output device for playback"
       },
 
       :logger => {
