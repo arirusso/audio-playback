@@ -25,15 +25,15 @@ Or if you're using Bundler, add this to your Gemfile
 
 #### options:
 
-* *-l* Latency in seconds.  Defaults to use the default latency for the selected output device
+* `-l` Latency in seconds.  Defaults to use the default latency for the selected output device
 
-* *-b* Buffer size in bytes.  Defaults to 4096
+* `-b` Buffer size in bytes.  Defaults to 4096
 
-* *-c* Output audio to the given channel(s).  Eg `-c 0,1` will direct audio to channels 0 and 1.  Defaults to use all available channels
+* `-c` Output audio to the given channel(s).  Eg `-c 0,1` will direct audio to channels 0 and 1.  Defaults to use all available channels
 
-* *-o* Output device id or name.  Defaults to the system default
+* `-o` Output device id or name.  Defaults to the system default
 
-* *-v* Verbose
+* `-v` Verbose
 
 #### example:
 
