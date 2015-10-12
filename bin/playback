@@ -27,14 +27,14 @@ require "audio-playback"
 require "audio-playback/commandline"
 require "optparse"
 
+def help(opts)
+  puts(opts)
+  exit
+end
+
 options = {}
 
 parser = OptionParser.new do |opts|
-
-  def help
-    puts(opts)
-    exit
-  end
 
   opts.banner = "Usage: playback [file] [options]"
   opts.separator ""
@@ -49,15 +49,14 @@ parser = OptionParser.new do |opts|
     end
   end
 
-  opts.on_tail("-h", "--help", "Show this message") { help }
+  opts.on_tail("-h", "--help", "Show this message") { help(opts) }
 
-  # Another typical switch to print the version.
   opts.on_tail("--version", "Show version") do
-    puts AudioPlayback::Version.join('.')
+    puts AudioPlayback::VERSION
     exit
   end
 
-  help if ARGV.empty?
+  help(opts) if ARGV.empty?
 end
 
 parser.parse!
