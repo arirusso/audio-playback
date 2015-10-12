@@ -1,15 +1,27 @@
 #!/usr/bin/env ruby
 $LOAD_PATH.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 
-# playback [filename] [options]
+# ## Usage
 #
-# options:
-# -l latency
-# -b buffer size eg 2048
-# -c num channels (must be equal or less to what the output supports)
-# -o output id or name
-# -v verbose output
+# `playback [filename] [options]`
 #
+# #### options:
+#
+# * *-l* Latency in millis
+#
+# * *-b* Buffer size eg 2048
+#
+# * *-c* Number of channels.  Must be equal or less to the number of channels that the output supports.
+#
+# * *-d* Direct output to the given channel(s).  Eg `-d 0,1` will direct the audio to channels 0 and 1
+#
+# * *-o* output id or name
+#
+# * *-v* verbose
+#
+# #### example:
+#
+# `playback test/media/1-stereo-44100.wav -v -d 0`
 
 require "optparse"
 require "audio-playback"
@@ -17,6 +29,7 @@ require "audio-playback"
 options = {}
 
 OptionParser.new do |opts|
+
   opts.banner = "Usage: playback [file] [options]"
   opts.separator ""
   opts.separator "Specific options:"
@@ -27,6 +40,14 @@ OptionParser.new do |opts|
 
   opts.on("-c", "--num-channels [number]", Integer, "Number of channels") do |num_channels|
     options[:num_channels] = num_channels
+  end
+
+  opts.on("-d", "--direct [channel1, channel2]", Array, "Direct to channel(s)") do |to_channels|
+    unless options[:num_channels].nil? || to_channels.count == options[:num_channels]
+      raise "Number of channels specified with -d conflicts with the number specified with -c"
+    else
+      options[:to_channels] = to_channels
+    end
   end
 
   opts.on("-l", "--latency [millis]", Float, "Latency") do |latency|

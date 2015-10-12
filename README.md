@@ -23,11 +23,17 @@ Or if you're using Bundler, add this to your Gemfile
 
 #### options:
 
-* *-l* latency in millis
-* *-b* buffer size eg 2048
-* *-c* num channels (must be equal or less to what the output supports)
-* *-o* output id or name
-* *-v* verbose
+* *-l* Latency in millis
+
+* *-b* Buffer size eg 2048
+
+* *-c* Number of channels.  Must be equal or less to the number of channels that the output supports.
+
+* *-d* Direct output to the given channel(s).  Eg `-d 0,1` will direct the audio to channels 0 and 1
+
+* *-o* Output id or name
+
+* *-v* Verbose
 
 #### example:
 
