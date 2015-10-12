@@ -126,27 +126,38 @@ module AudioPlayback
       data
     end
 
-    def populate_num_channels(options = {})
-      @num_channels = if options[:num_channels].nil? && options[:to_channels].nil?
-        @output.num_channels
+    def validate_requested_channels(num_channels, to_channels)
+      if !num_channels.nil? && !to_channels.nil? && to_channels.count != num_channels
+        raise "Conflict in channels specified"
+      end
+      if num_channels > @output.num_channels
+        raise "Only #{@output.num_channels} channels available on #{@output.name} output"
+      end
+    end
+
+    def populate_requested_channels(options = {})
+      if options[:to_channels].nil?
+        requested_num_channels = options[:num_channels].to_i
       else
-        requested_channels = if options[:num_channels].nil?
-          @to_channels = options[:to_channels].map(&:to_i).uniq
-          options[:to_channels].count
-        else
-          options[:num_channels].to_i
-        end
-        if requested_channels > @output.num_channels
-          raise "Only #{@output.num_channels} channels available on #{@output.name} output"
-          exit
-        else
-          requested_channels
-        end
+        requested_to_channels = options[:to_channels].map(&:to_i).uniq
+        requested_num_channels = options[:to_channels].count
+      end
+      if validate_requested_channels(requested_num_channels, requested_to_channels)
+        @num_channels = requested_num_channels
+        @to_channels = requested_to_channels
+      end
+    end
+
+    def populate_channels(options = {})
+      if options[:num_channels].nil? && options[:to_channels].nil?
+        @num_channels = @output.num_channels
+      else
+        populate_requested_channels(options)
       end
     end
 
     def populate(options = {})
-      populate_num_channels(options)
+      populate_channels(options)
       data = frames
       add_metadata(data)
       @data = pointer(data.flatten)
