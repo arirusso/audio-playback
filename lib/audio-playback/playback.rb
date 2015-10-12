@@ -135,7 +135,11 @@ module AudioPlayback
     end
 
     def populate_requested_channels(options = {})
-      requested_channels = options[:channels].map(&:to_i).uniq
+      requested_channels = if options[:channels].kind_of?(Array)
+        options[:channels].map(&:to_i).uniq
+      else
+        options[:channels].to_i
+      end
       if validate_requested_channels(requested_channels)
         @num_channels = requested_channels.count
         @channels = requested_channels
