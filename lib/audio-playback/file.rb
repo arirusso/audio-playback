@@ -4,10 +4,10 @@ module AudioPlayback
 
     attr_reader :num_channels, :path, :sample_rate, :size
 
-    def initialize(path)
-      @path = path
-      @file = RubyAudio::Sound.open(path)
-      @size = ::File.size(path)
+    def initialize(file_or_path)
+      @path = file_or_path.kind_of?(::File) ? file_or_path.path : file_or_path
+      @file = RubyAudio::Sound.open(@path)
+      @size = ::File.size(@path)
       @num_channels = @file.info.channels
       @sample_rate = @file.info.samplerate
     end

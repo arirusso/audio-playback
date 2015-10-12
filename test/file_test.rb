@@ -34,7 +34,8 @@ class AudioPlayback::FileTest < Minitest::Test
 
         setup do
           @path = "test/media/1-stereo-44100.wav"
-          @file = AudioPlayback::File.new(@path)
+          @file_obj = File.new(@path)
+          @file = AudioPlayback::File.new(@file_obj)
         end
 
         should "populate" do

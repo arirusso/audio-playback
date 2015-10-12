@@ -7,8 +7,8 @@ module AudioPlayback
     attr_reader :audio_file, :data, :size
     def_delegators :@audio_file, :num_channels, :sample_rate
 
-    def self.load(filename, options = {})
-      file = AudioPlayback::File.new(filename)
+    def self.load(file_path, options = {})
+      file = AudioPlayback::File.new(file_path)
       new(file, options)
     end
 
