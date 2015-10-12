@@ -50,7 +50,7 @@ playback.block
 
 * `:buffer_size` Buffer size in bytes.  Defaults to 4096
 
-* `:channels` Output audio to the given channel(s).  Eg `:channels => [0,1]` will direct the audio to channels 0 and 1. Defaults to use all available channels
+* `:channel` or `:channels` Output audio to the given channel(s).  Eg `:channels => [0,1]` will direct the audio to channels 0 and 1. Defaults to use all available channels
 
 * `:latency` Latency in seconds.  Defaults to use the default latency for the selected output device
 

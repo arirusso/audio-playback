@@ -20,7 +20,7 @@ module AudioPlayback
     # @param [Output] output
     # @param [Hash] options
     # @option options [Fixnum] :buffer_size
-    # @option options [Array<Fixnum>, Fixnum] :channels
+    # @option options [Array<Fixnum>, Fixnum] :channels (or: :channel)
     # @option options [IO] :logger
     # @option options [Stream] :stream
     # @return [Playback]
@@ -33,7 +33,7 @@ module AudioPlayback
     # @param [Output] output
     # @param [Hash] options
     # @option options [Fixnum] :buffer_size
-    # @option options [Array<Fixnum>, Fixnum] :channels
+    # @option options [Array<Fixnum>, Fixnum] :channels (or: :channel)
     # @option options [IO] :logger
     # @option options [Stream] :stream
     def initialize(sound, output, options = {})
@@ -160,12 +160,9 @@ module AudioPlayback
       true
     end
 
-    def populate_requested_channels(options = {})
-      requested_channels = if options[:channels].kind_of?(Array)
-        options[:channels].map(&:to_i).uniq
-      else
-        options[:channels].to_i
-      end
+    def populate_requested_channels(request)
+      request = Array(request)
+      requested_channels = request.map(&:to_i).uniq
       if validate_requested_channels(requested_channels)
         @num_channels = requested_channels.count
         @channels = requested_channels
@@ -173,10 +170,11 @@ module AudioPlayback
     end
 
     def populate_channels(options = {})
-      if options[:channels].nil?
+      request = options[:channels] || options[:channel]
+      if request.nil?
         @num_channels = @output.num_channels
       else
-        populate_requested_channels(options)
+        populate_requested_channels(request)
       end
     end
 
