@@ -11,9 +11,7 @@
 require "ffi/libc"
 require "ffi-portaudio"
 require "forwardable"
-require "midi-eye"
 require "ruby-audio"
-require "unimidi"
 
 # modules
 require "audio-playback/device"
