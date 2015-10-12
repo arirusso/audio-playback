@@ -23,49 +23,33 @@ $LOAD_PATH.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 #
 # `playback test/media/1-stereo-44100.wav -v -d 0`
 
-require "optparse"
 require "audio-playback"
+require "audio-playback/commandline"
+require "optparse"
 
 options = {}
 
-OptionParser.new do |opts|
+parser = OptionParser.new do |opts|
+
+  def help
+    puts(opts)
+    exit
+  end
 
   opts.banner = "Usage: playback [file] [options]"
   opts.separator ""
   opts.separator "Specific options:"
 
-  opts.on("-b", "--buffer-size [bytes]", Integer, "Buffer size") do |buffer_size|
-    options[:buffer_size] = buffer_size
-  end
-
-  opts.on("-c", "--num-channels [number]", Integer, "Number of channels") do |num_channels|
-    options[:num_channels] = num_channels
-  end
-
-  opts.on("-d", "--direct [channel1, channel2]", Array, "Direct to channel(s)") do |to_channels|
-    unless options[:num_channels].nil? || to_channels.count == options[:num_channels]
-      raise "Number of channels specified with -d conflicts with the number specified with -c"
-    else
-      options[:to_channels] = to_channels
+  AudioPlayback::Commandline::OPTIONS.each do |key, spec|
+    opts.on(spec[:short], spec[:long], spec[:type], spec[:name]) do |value|
+      if value.is_a?(TrueClass) && !spec[:when_true].nil?
+        value = spec[:when_true]
+      end
+      options[key] = value
     end
   end
 
-  opts.on("-l", "--latency [millis]", Float, "Latency") do |latency|
-    options[:latency] = latency
-  end
-
-  opts.on("-o", "--output [name or id]", String, "Output to playback with") do |output|
-    options[:output] = output
-  end
-
-  opts.on("-v", "--verbose", "Run verbosely") do |verbose|
-    options[:logger] = $> if verbose
-  end
-
-  opts.on_tail("-h", "--help", "Show this message") do
-    puts(opts)
-    exit
-  end
+  opts.on_tail("-h", "--help", "Show this message") { help }
 
   # Another typical switch to print the version.
   opts.on_tail("--version", "Show version") do
@@ -73,12 +57,10 @@ OptionParser.new do |opts|
     exit
   end
 
-  if ARGV.empty?
-    puts(opts)
-    exit
-  end
+  help if ARGV.empty?
+end
 
-end.parse!
+parser.parse!
 
 playback = AudioPlayback.play(ARGV[0], options)
 playback.block
