@@ -7,21 +7,15 @@ $LOAD_PATH.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 #
 # #### options:
 #
-# * *-l* Latency in millis
+# * *-l* Latency in seconds
 #
 # * *-b* Buffer size eg 2048
 #
-# * *-c* Number of channels.  Must be equal or less to the number of channels that the output supports.
+# * *-c* Output to the given channel(s).  Eg `-c 0,1` will direct the audio to channels 0 and 1
+# 
+# * *-o* Output device id or name
 #
-# * *-d* Direct output to the given channel(s).  Eg `-d 0,1` will direct the audio to channels 0 and 1
-#
-# * *-o* output id or name
-#
-# * *-v* verbose
-#
-# #### example:
-#
-# `playback test/media/1-stereo-44100.wav -v -d 0`
+# * *-v* Verbose
 
 require "audio-playback"
 require "audio-playback/commandline"

@@ -41,7 +41,7 @@ module AudioPlayback
     def report(logger)
       logger.puts("Playback report for #{@sound.audio_file.path}")
       logger.puts("  Number of channels: #{@num_channels}")
-      logger.puts("  Direct audio to channels #{@to_channels.to_s}") unless @to_channels.nil?
+      logger.puts("  Direct audio to channels #{@channels.to_s}") unless @channels.nil?
       logger.puts("  Buffer size: #{@buffer_size}")
       logger.puts("  Latency: #{@output.latency}")
       true
@@ -67,35 +67,35 @@ module AudioPlayback
 
     def ensure_structure(data)
       data = ensure_array_frames(data)
-      if @sound.num_channels == @num_channels
+      if @sound.num_channels == @num_channels && @channels.nil?
         data
       else
         ensure_num_channels(data, @num_channels)
-        if @to_channels.nil?
+        if @channels.nil?
           if @num_channels != @output.num_channels
             ensure_num_channels(data, @output.num_channels)
           end
         else
-          ensure_num_channels(data, @output.num_channels, :to_channels => @to_channels)
+          ensure_num_channels(data, @output.num_channels, :channels => @channels)
         end
         data
       end
     end
 
-    def fill_frame_for_channels(frame, size, to_channels)
+    def fill_frame_for_channels(frame, size, channels)
       values = frame.dup
       frame.fill(0, 0, size)
-      to_channels.each do |channel|
+      channels.each do |channel|
         value = values[channel] || values.first
         frame[channel] = value
       end
     end
 
     def fill_frame(frame, size, difference, options = {})
-      if (to_channels = options[:to_channels]).nil?
+      if (channels = options[:channels]).nil?
         frame.fill(frame.last, frame.size, difference)
       else
-        fill_frame_for_channels(frame, size, to_channels)
+        fill_frame_for_channels(frame, size, channels)
       end
     end
 
@@ -103,7 +103,7 @@ module AudioPlayback
       data.each do |frame|
         difference = num - frame.size
         if difference > 0
-          fill_frame(frame, num, difference, :to_channels => options[:to_channels])
+          fill_frame(frame, num, difference, :channels => options[:channels])
         else
           frame.slice!(num..-1)
         end
@@ -126,12 +126,8 @@ module AudioPlayback
       data
     end
 
-    def validate_requested_channels(num_channels, to_channels)
-      if !num_channels.nil? && !to_channels.nil? && to_channels.count != num_channels
-        raise "Conflict in channels specified"
-        false
-      end
-      if num_channels > @output.num_channels
+    def validate_requested_channels(channels)
+      if channels.count > @output.num_channels
         raise "Only #{@output.num_channels} channels available on #{@output.name} output"
         false
       end
@@ -139,20 +135,15 @@ module AudioPlayback
     end
 
     def populate_requested_channels(options = {})
-      if options[:to_channels].nil?
-        requested_num_channels = options[:num_channels].to_i
-      else
-        requested_to_channels = options[:to_channels].map(&:to_i).uniq
-        requested_num_channels = options[:to_channels].count
-      end
-      if validate_requested_channels(requested_num_channels, requested_to_channels)
-        @num_channels = requested_num_channels
-        @to_channels = requested_to_channels
+      requested_channels = options[:channels].map(&:to_i).uniq
+      if validate_requested_channels(requested_channels)
+        @num_channels = requested_channels.count
+        @channels = requested_channels
       end
     end
 
     def populate_channels(options = {})
-      if options[:num_channels].nil? && options[:to_channels].nil?
+      if options[:channels].nil?
         @num_channels = @output.num_channels
       else
         populate_requested_channels(options)

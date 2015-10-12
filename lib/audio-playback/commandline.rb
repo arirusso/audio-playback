@@ -10,16 +10,9 @@ module AudioPlayback
         :name => "Buffer size"
       },
 
-      :num_channels => {
+      :channels => {
         :short => "-c",
-        :long => "--num-channels [number]",
-        :type => Integer,
-        :name => "Number of channels"
-      },
-
-      :to_channels => {
-        :short => "-d",
-        :long => "--direct [channel1, channel2]",
+        :long => "--channels [channel1, channel2]",
         :type => Array,
         :name => "Direct to channel(s)"
       },
@@ -31,18 +24,18 @@ module AudioPlayback
         :name => "Latency"
       },
 
-      :output => {
-        :short => "-o",
-        :long => "--output [name or id]",
-        :type => String,
-        :name => "Output device for playback"
-      },
-
       :logger => {
         :short => "-v",
         :long => "--verbose",
         :name => "Run verbosely",
         :when_true => $>
+      },
+
+      :output_device => {
+        :short => "-o",
+        :long => "--output [name or id]",
+        :type => String,
+        :name => "Output device for playback"
       }
     }
 
