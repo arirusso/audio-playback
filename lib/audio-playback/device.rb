@@ -1,5 +1,6 @@
 module AudioPlayback
 
+  # Audio IO devices
   module Device
 
     extend self
@@ -26,14 +27,14 @@ module AudioPlayback
       by_id(FFI::PortAudio::API.Pa_GetDefaultOutputDevice)
     end
 
+    def device_info(id)
+      FFI::PortAudio::API.Pa_GetDeviceInfo(id)
+    end
+
     private
 
     def output?(id)
       device_info(id)[:maxOutputChannels] > 0
-    end
-
-    def device_info(id)
-      FFI::PortAudio::API.Pa_GetDeviceInfo(id)
     end
 
   end
