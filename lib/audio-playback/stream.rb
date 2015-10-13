@@ -69,6 +69,7 @@ module AudioPlayback
       self
     end
 
+    # Portaudio stream callback
     def process(input, output, frames_per_buffer, time_info, status_flags, user_data)
       #puts "--"
       #puts "Entering callback at #{Time.now.to_f}"

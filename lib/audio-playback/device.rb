@@ -46,6 +46,9 @@ module AudioPlayback
 
     private
 
+    # Is the device with the given ID an output?
+    # @param [Fixnum] id
+    # @return [Boolean]
     def output?(id)
       device_info(id)[:maxOutputChannels] > 0
     end

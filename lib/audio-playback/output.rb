@@ -29,6 +29,8 @@ module AudioPlayback
     # @param [Hash] options
     # @option options [Float] :latency Device latency in seconds
     def initialize(id, options = {})
+      # Init audio output resource
+      AudioPlayback.ensure_initialized
       populate(id, options)
     end
 
@@ -52,14 +54,18 @@ module AudioPlayback
 
     private
 
+    # The underlying resource info struct for this output
+    # @return [FFI::PortAudio::API::PaDeviceInfo]
     def info
       @info ||= Device.device_info(id)
     end
 
+    # Populate the output
+    # @param [Fixnum] id
+    # @param [Hash] options
+    # @option options [Float] :latency
+    # @return [FFI::PortAudio::API::PaStreamParameters]
     def populate(id, options = {})
-      # Init audio output resource
-      AudioPlayback.ensure_initialized
-      #
       @resource = FFI::PortAudio::API::PaStreamParameters.new
       @resource[:device] = id
       @name = info[:name]

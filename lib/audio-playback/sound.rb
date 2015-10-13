@@ -39,9 +39,14 @@ module AudioPlayback
 
     private
 
+    # Populate the sound meta/data
+    # @param [Hash] options
+    # @option options [IO] :logger
+    # @return [Sound]
     def populate(options = {})
       @data = @audio_file.read(options)
       @size = data.size
+      self
     end
 
   end
