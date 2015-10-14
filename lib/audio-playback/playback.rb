@@ -85,6 +85,7 @@ module AudioPlayback
 
     private
 
+    # A C pointer version of the audio data
     def pointer(data)
       pointer = FFI::LibC.malloc(data_size)
       pointer.write_array_of_float(data)

@@ -46,10 +46,15 @@ module AudioPlayback
 
     private
 
+    # Initialize the callback that's fired when the stream exits
+    # @return [Stream]
     def initialize_exit_callback(options = {})
       at_exit { exit_callback(options) }
+      self
     end
 
+    # Callback that's fired when the stream exits
+    # @return [Boolean]
     def exit_callback(options = {})
       logger = options[:logger]
       logger.puts("Exit") if logger
@@ -60,11 +65,18 @@ module AudioPlayback
       true
     end
 
+    # Initialize the stream for playback
+    # @param [Playback] playback
+    # @return [Boolean]
     def open_playback(playback)
       open(@input, @output, playback.sample_rate.to_i, playback.buffer_size, FFI::PortAudio::API::NoFlag, playback.data)
       true
     end
 
+    # Report about the stream
+    # @param [Playback] playback
+    # @param [IO] logger
+    # @return [Stream]
     def report(playback, logger)
       self
     end
