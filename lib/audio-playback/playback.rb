@@ -109,28 +109,11 @@ module AudioPlayback
       end
     end
 
-    def fill_frame_for_channels(frame, size, channels)
-      values = frame.dup
-      frame.fill(0, 0, size)
-      channels.each do |channel|
-        value = values[channel] || values.first
-        frame[channel] = value
-      end
-    end
-
-    def fill_frame(frame, size, difference, options = {})
-      if (channels = options[:channels]).nil?
-        frame.fill(frame.last, frame.size, difference)
-      else
-        fill_frame_for_channels(frame, size, channels)
-      end
-    end
-
     def ensure_num_channels(data, num, options = {})
       data.each do |frame|
         difference = num - frame.size
         if difference > 0
-          fill_frame(frame, num, difference, :channels => options[:channels])
+          Frame.fill(frame, num, difference, :channels => options[:channels])
         else
           frame.slice!(num..-1)
         end
@@ -185,6 +168,32 @@ module AudioPlayback
       add_metadata(data)
       @data = pointer(data.flatten)
     end
+
+    module Frame
+
+      extend self
+
+      def fill(frame, size, difference, options = {})
+        if (channels = options[:channels]).nil?
+          frame.fill(frame.last, frame.size, difference)
+        else
+          fill_for_channels(frame, size, channels)
+        end
+      end
+
+      private
+
+      def fill_for_channels(frame, size, channels)
+        values = frame.dup
+        frame.fill(0, 0, size)
+        channels.each do |channel|
+          value = values[channel] || values.first
+          frame[channel] = value
+        end
+      end
+
+    end
+
   end
 
 end
