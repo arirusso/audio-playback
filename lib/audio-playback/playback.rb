@@ -173,16 +173,27 @@ module AudioPlayback
 
       extend self
 
+      # @param [<Array<Float>, Array<Array<Float>>] frame
+      # @param [Fixnum] size
+      # @param [Fixnum] difference
+      # @param [Hash] options
+      # @option options [Array<Fixnum>] :channels
+      # @return [Boolean]
       def fill(frame, size, difference, options = {})
         if (channels = options[:channels]).nil?
           frame.fill(frame.last, frame.size, difference)
         else
           fill_for_channels(frame, size, channels)
         end
+        true
       end
 
       private
 
+      # @param [<Array<Float>, Array<Array<Float>>] frame
+      # @param [Fixnum] size
+      # @param [Array<Fixnum>] channels
+      # @return [Boolean]
       def fill_for_channels(frame, size, channels)
         values = frame.dup
         frame.fill(0, 0, size)
@@ -190,6 +201,7 @@ module AudioPlayback
           value = values[channel] || values.first
           frame[channel] = value
         end
+        true
       end
 
     end
