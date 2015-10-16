@@ -137,7 +137,7 @@ module AudioPlayback
       private
 
       def populate
-        @data = FrameSet.build(@playback)
+        @data = FrameSet.new(@playback)
         add_metadata
         @data
       end
@@ -152,23 +152,29 @@ module AudioPlayback
 
     end
 
-    module FrameSet
+    class FrameSet
 
-      extend self
+      extend Forwardable
 
-      def build(playback)
+      def_delegators :@data, :flatten, :slice, :to_ary, :unshift
+
+      def initialize(playback)
+        populate(playback)
+      end
+
+      private
+
+      def populate(playback)
         data = playback.sound.data.dup
         data = ensure_array_frames(data)
         data = to_frame_objects(data)
 
-        if channels_match?(playback)
+        @data = if channels_match?(playback)
           data
         else
           build_channels(playback, data)
         end
       end
-
-      private
 
       def channels_match?(playback)
         playback.sound.num_channels == playback.num_channels && playback.channels.nil?
@@ -224,10 +230,12 @@ module AudioPlayback
 
       extend Forwardable
 
+      attr_reader :frame
       def_delegators :@frame, :[], :all?, :any?, :count, :each, :flatten, :map, :size, :to_ary
 
       def initialize(frame)
-        @frame = frame
+        @frame = frame.frame if frame.kind_of?(Frame)
+        @frame ||= frame
       end
 
       def truncate(num)
