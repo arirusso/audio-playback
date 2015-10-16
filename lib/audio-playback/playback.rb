@@ -80,7 +80,7 @@ module AudioPlayback
     # Sound frames
     # @return [Array<Array<Float>>]
     def frames
-      @frames ||= ensure_structure(@sound.data.dup)
+      @frames ||= Frames.ensure_structure(@sound.data.dup, @sound.num_channels, @output.num_channels, @num_channels, :channels => @channels)
     end
 
     private
@@ -90,42 +90,6 @@ module AudioPlayback
       pointer = FFI::LibC.malloc(data_size)
       pointer.write_array_of_float(data)
       pointer
-    end
-
-    def ensure_structure(data)
-      data = ensure_array_frames(data)
-      if @sound.num_channels == @num_channels && @channels.nil?
-        data
-      else
-        ensure_num_channels(data, @num_channels)
-        if @channels.nil?
-          if @num_channels != @output.num_channels
-            ensure_num_channels(data, @output.num_channels)
-          end
-        else
-          ensure_num_channels(data, @output.num_channels, :channels => @channels)
-        end
-        data
-      end
-    end
-
-    def ensure_num_channels(data, num, options = {})
-      data.each do |frame|
-        difference = num - frame.size
-        if difference > 0
-          Frame.fill(frame, num, difference, :channels => options[:channels])
-        else
-          frame.slice!(num..-1)
-        end
-      end
-    end
-
-    def ensure_array_frames(data)
-      if data.sample.kind_of?(Array)
-        data
-      else
-        data.map { |frame| Array(frame) }
-      end
     end
 
     def add_metadata(data)
@@ -167,6 +131,49 @@ module AudioPlayback
       data = frames
       add_metadata(data)
       @data = pointer(data.flatten)
+    end
+
+    module Frames
+
+      extend self
+
+      def ensure_structure(data, sound_num_channels, output_num_channels, requested_num_channels, options = {})
+        channels = options[:channels]
+        data = ensure_array_frames(data)
+        if sound_num_channels == requested_num_channels && channels.nil?
+          data
+        else
+          ensure_num_channels(data, requested_num_channels)
+          if channels.nil?
+            if requested_num_channels != output_num_channels
+              ensure_num_channels(data, output_num_channels)
+            end
+          else
+            ensure_num_channels(data, output_num_channels, :channels => channels)
+          end
+          data
+        end
+      end
+
+      def ensure_num_channels(data, num, options = {})
+        data.each do |frame|
+          difference = num - frame.size
+          if difference > 0
+            Frame.fill(frame, num, difference, :channels => options[:channels])
+          else
+            frame.slice!(num..-1)
+          end
+        end
+      end
+
+      def ensure_array_frames(data)
+        if data.sample.kind_of?(Array)
+          data
+        else
+          data.map { |frame| Array(frame) }
+        end
+      end
+
     end
 
     module Frame
