@@ -5,7 +5,7 @@ module AudioPlayback
 
     extend Forwardable
 
-    attr_reader :buffer_size, :data, :output, :num_channels, :sound, :stream
+    attr_reader :buffer_size, :channels, :data, :output, :num_channels, :sound, :stream
     def_delegators :@sound, :audio_file, :sample_rate, :size
 
     DEFAULT = {
@@ -77,12 +77,6 @@ module AudioPlayback
       frames * FRAME_SIZE.size
     end
 
-    # Sound frames
-    # @return [Array<Array<Float>>]
-    def frames
-      @frames ||= Frames.ensure_structure(@sound.data.dup, @sound.num_channels, @output.num_channels, @num_channels, :channels => @channels)
-    end
-
     private
 
     def validate_requested_channels(channels)
@@ -139,8 +133,9 @@ module AudioPlayback
       private
 
       def populate
-        @data = @playback.frames
+        @data = Frames.ensure_structure(@playback)
         add_metadata
+        @data
       end
 
       def add_metadata
@@ -157,19 +152,23 @@ module AudioPlayback
 
       extend self
 
-      def ensure_structure(data, sound_num_channels, output_num_channels, requested_num_channels, options = {})
-        channels = options[:channels]
+      def ensure_structure(playback)
+        data = playback.sound.data.dup
+        sound_num_channels = playback.sound.num_channels
+        output_num_channels = playback.output.num_channels
+        requested_num_channels = playback.num_channels
+
         data = ensure_array_frames(data)
-        if sound_num_channels == requested_num_channels && channels.nil?
+        if sound_num_channels == requested_num_channels && playback.channels.nil?
           data
         else
           ensure_num_channels(data, requested_num_channels)
-          if channels.nil?
+          if playback.channels.nil?
             if requested_num_channels != output_num_channels
               ensure_num_channels(data, output_num_channels)
             end
           else
-            ensure_num_channels(data, output_num_channels, :channels => channels)
+            ensure_num_channels(data, output_num_channels, :channels => playback.channels)
           end
           data
         end
