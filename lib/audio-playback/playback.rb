@@ -137,7 +137,7 @@ module AudioPlayback
       private
 
       def populate
-        @data = Frames.build(@playback)
+        @data = FrameSet.build(@playback)
         add_metadata
         @data
       end
@@ -152,7 +152,7 @@ module AudioPlayback
 
     end
 
-    module Frames
+    module FrameSet
 
       extend self
 
