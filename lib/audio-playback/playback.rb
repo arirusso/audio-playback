@@ -5,7 +5,7 @@ module AudioPlayback
 
     extend Forwardable
 
-    attr_reader :buffer_size, :data, :num_channels, :sound, :stream
+    attr_reader :buffer_size, :data, :output, :num_channels, :sound, :stream
     def_delegators :@sound, :audio_file, :sample_rate, :size
 
     DEFAULT = {
@@ -85,21 +85,6 @@ module AudioPlayback
 
     private
 
-    # A C pointer version of the audio data
-    def pointer(data)
-      pointer = FFI::LibC.malloc(data_size)
-      pointer.write_array_of_float(data)
-      pointer
-    end
-
-    def add_metadata(data)
-      data.unshift(0.0) # 3. is_eof
-      data.unshift(0.0) # 2. counter
-      data.unshift(@output.num_channels.to_f) # 1. num_channels
-      data.unshift(@sound.size.to_f) # 0. sample size
-      data
-    end
-
     def validate_requested_channels(channels)
       if channels.count > @output.num_channels
         raise "Only #{@output.num_channels} channels available on #{@output.name} output"
@@ -128,9 +113,44 @@ module AudioPlayback
 
     def populate(options = {})
       populate_channels(options)
-      data = frames
-      add_metadata(data)
-      @data = pointer(data.flatten)
+      @data = StreamData.to_pointer(self)
+    end
+
+    class StreamData
+
+      # A C pointer version of the audio data
+      def self.to_pointer(playback)
+        stream_data = new(playback)
+        stream_data.to_pointer
+      end
+
+      def initialize(playback)
+        @playback = playback
+        populate
+      end
+
+      # A C pointer version of the audio data
+      def to_pointer
+        pointer = FFI::LibC.malloc(@playback.data_size)
+        pointer.write_array_of_float(@data.flatten)
+        pointer
+      end
+
+      private
+
+      def populate
+        @data = @playback.frames
+        add_metadata
+      end
+
+      def add_metadata
+        @data.unshift(0.0) # 3. is_eof
+        @data.unshift(0.0) # 2. counter
+        @data.unshift(@playback.output.num_channels.to_f) # 1. num_channels
+        @data.unshift(@playback.sound.size.to_f) # 0. sample size
+        @data
+      end
+
     end
 
     module Frames
