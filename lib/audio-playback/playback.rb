@@ -133,7 +133,7 @@ module AudioPlayback
       private
 
       def populate
-        @data = Frames.ensure_structure(@playback)
+        @data = Frames.build(@playback)
         add_metadata
         @data
       end
@@ -152,7 +152,7 @@ module AudioPlayback
 
       extend self
 
-      def ensure_structure(playback)
+      def build(playback)
         data = playback.sound.data.dup
         sound_num_channels = playback.sound.num_channels
         output_num_channels = playback.output.num_channels
@@ -173,6 +173,8 @@ module AudioPlayback
           data
         end
       end
+
+      private
 
       def ensure_num_channels(data, num, options = {})
         data.each do |frame|

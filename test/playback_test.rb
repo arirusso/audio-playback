@@ -121,7 +121,7 @@ class AudioPlayback::PlaybackTest < Minitest::Test
               @output = MockOutput.new(1, :num_channels => 1)
               @playback = AudioPlayback::Playback.new(@sound, @output, :stream => MockStream.new(@output))
               @data = @sound.data
-              @frames = AudioPlayback::Playback::Frames.ensure_structure(@playback).slice(AudioPlayback::Playback::METADATA.size..-1)
+              @frames = AudioPlayback::Playback::Frames.build(@playback).slice(AudioPlayback::Playback::METADATA.size..-1)
             end
 
             should "have two channels of valid data" do
@@ -144,7 +144,7 @@ class AudioPlayback::PlaybackTest < Minitest::Test
               @output = MockOutput.new(1, :num_channels => 2)
               @playback = AudioPlayback::Playback.new(@sound, @output, :stream => MockStream.new(@output))
               @data = @sound.data
-              @frames = AudioPlayback::Playback::Frames.ensure_structure(@playback).slice(AudioPlayback::Playback::METADATA.size..-1)
+              @frames = AudioPlayback::Playback::Frames.build(@playback).slice(AudioPlayback::Playback::METADATA.size..-1)
             end
 
             should "have one channel of valid data" do
@@ -172,7 +172,7 @@ class AudioPlayback::PlaybackTest < Minitest::Test
               @output = MockOutput.new(1, :num_channels => 2)
               @playback = AudioPlayback::Playback.new(@sound, @output, :stream => MockStream.new(@output))
               @data = @sound.data
-              @frames = AudioPlayback::Playback::Frames.ensure_structure(@playback).slice(AudioPlayback::Playback::METADATA.size..-1)
+              @frames = AudioPlayback::Playback::Frames.build(@playback).slice(AudioPlayback::Playback::METADATA.size..-1)
             end
 
             should "have two channels of valid data" do
@@ -195,7 +195,7 @@ class AudioPlayback::PlaybackTest < Minitest::Test
               @output = MockOutput.new(1, :num_channels => 1)
               @playback = AudioPlayback::Playback.new(@sound, @output, :stream => MockStream.new(@output))
               @data = @sound.data
-              @frames = AudioPlayback::Playback::Frames.ensure_structure(@playback).slice(AudioPlayback::Playback::METADATA.size..-1)
+              @frames = AudioPlayback::Playback::Frames.build(@playback).slice(AudioPlayback::Playback::METADATA.size..-1)
             end
 
             should "have one channel of valid data" do
