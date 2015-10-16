@@ -77,6 +77,10 @@ module AudioPlayback
       frames * FRAME_SIZE.size
     end
 
+    def channels_requested?
+      !@channels.nil?
+    end
+
     private
 
     def validate_requested_channels(channels)
@@ -154,27 +158,41 @@ module AudioPlayback
 
       def build(playback)
         data = playback.sound.data.dup
-        sound_num_channels = playback.sound.num_channels
-        output_num_channels = playback.output.num_channels
-        requested_num_channels = playback.num_channels
-
         data = ensure_array_frames(data)
-        if sound_num_channels == requested_num_channels && playback.channels.nil?
+
+        if channels_match?(playback)
           data
         else
-          ensure_num_channels(data, requested_num_channels)
-          if playback.channels.nil?
-            if requested_num_channels != output_num_channels
-              ensure_num_channels(data, output_num_channels)
-            end
-          else
-            ensure_num_channels(data, output_num_channels, :channels => playback.channels)
-          end
-          data
+          build_channels(playback, data)
         end
       end
 
       private
+
+      def channels_match?(playback)
+        playback.sound.num_channels == playback.num_channels && playback.channels.nil?
+      end
+
+      def build_channels(playback, data)
+        ensure_num_channels(data, playback.num_channels)
+
+        if playback.channels_requested?
+          ensure_requested_channels(data, playback)
+        else
+          ensure_output_channels(data, playback)
+        end
+        data
+      end
+
+      def ensure_requested_channels(data, playback)
+        ensure_num_channels(data, playback.output.num_channels, :channels => playback.channels)
+      end
+
+      def ensure_output_channels(data, playback)
+        if playback.num_channels != playback.output.num_channels
+          ensure_num_channels(data, playback.output.num_channels)
+        end
+      end
 
       def ensure_num_channels(data, num, options = {})
         data.each do |frame|
