@@ -15,11 +15,11 @@ require "ruby-audio"
 
 # modules
 require "audio-playback/device"
+require "audio-playback/playback"
 
 # classes
 require "audio-playback/file"
 require "audio-playback/output"
-require "audio-playback/playback"
 require "audio-playback/sound"
 require "audio-playback/stream"
 
