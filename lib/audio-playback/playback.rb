@@ -159,6 +159,7 @@ module AudioPlayback
       def build(playback)
         data = playback.sound.data.dup
         data = ensure_array_frames(data)
+        data = to_frame_objects(data)
 
         if channels_match?(playback)
           data
@@ -197,11 +198,10 @@ module AudioPlayback
       def ensure_num_channels(data, num, options = {})
         data.each do |frame|
           difference = num - frame.size
-          frame_obj = Frame.new(frame)
           if difference > 0
-            frame_obj.fill(num, difference, :channels => options[:channels])
+            frame.fill(num, difference, :channels => options[:channels])
           else
-            frame_obj.truncate(num)
+            frame.truncate(num)
           end
         end
       end
@@ -214,13 +214,17 @@ module AudioPlayback
         end
       end
 
+      def to_frame_objects(data)
+        data.map { |frame| Frame.new(frame) }
+      end
+
     end
 
     class Frame
 
       extend Forwardable
 
-      def_delegators :@frame, :[]
+      def_delegators :@frame, :[], :all?, :any?, :count, :each, :flatten, :map, :size, :to_ary
 
       def initialize(frame)
         @frame = frame

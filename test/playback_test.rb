@@ -151,7 +151,7 @@ class AudioPlayback::PlaybackTest < Minitest::Test
               refute_nil @frames
               assert @frames.kind_of?(Array)
               refute_empty @frames
-              assert @frames.all? { |frame_channels| frame_channels.kind_of?(Array) }
+              assert @frames.all? { |frame_channels| frame_channels.kind_of?(AudioPlayback::Playback::Frame) }
               assert @frames.all? { |frame_channels| frame_channels.count == @output.num_channels }
               assert @frames.all? { |frame_channels| frame_channels.count == @sound.num_channels }
               assert @frames.all? { |frame_channels| frame_channels.all? { |frame| frame.kind_of?(Float) } }
@@ -202,7 +202,7 @@ class AudioPlayback::PlaybackTest < Minitest::Test
               refute_nil @frames
               assert @frames.kind_of?(Array)
               refute_empty @frames
-              assert @frames.all? { |frame_channels| frame_channels.kind_of?(Array) }
+              assert @frames.all? { |frame_channels| frame_channels.kind_of?(AudioPlayback::Playback::Frame) }
               assert @frames.all? { |frame_channels| frame_channels.count == @output.num_channels }
               refute @frames.any? { |frame_channels| frame_channels.count == @sound.num_channels }
               assert @frames.all? { |frame_channels| frame_channels.all? { |frame| frame.kind_of?(Float) } }
