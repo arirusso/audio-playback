@@ -1,11 +1,11 @@
 require "helper"
 
-class AudioPlayback::OutputTest < Minitest::Test
+class AudioPlayback::Device::OutputTest < Minitest::Test
 
   context "Output" do
 
     setup do
-      @outputs = AudioPlayback::Output.all
+      @outputs = AudioPlayback::Device::Output.all
     end
 
     context ".all" do
@@ -22,7 +22,7 @@ class AudioPlayback::OutputTest < Minitest::Test
 
       should "return an output with the given id" do
         @outputs.each do |output|
-          assert_equal output, AudioPlayback::Output.by_id(output.id)
+          assert_equal output, AudioPlayback::Device::Output.by_id(output.id)
         end
       end
 
@@ -32,7 +32,7 @@ class AudioPlayback::OutputTest < Minitest::Test
 
       should "return an output with the given name" do
         @outputs.each do |output|
-          assert_equal output, AudioPlayback::Output.by_name(output.name)
+          assert_equal output, AudioPlayback::Device::Output.by_name(output.name)
         end
       end
 
@@ -42,7 +42,7 @@ class AudioPlayback::OutputTest < Minitest::Test
 
       setup do
         @id = 0
-        @output = AudioPlayback::Output.new(@id)
+        @output = AudioPlayback::Device::Output.new(@id)
       end
 
       should "populate id" do
@@ -78,7 +78,7 @@ class AudioPlayback::OutputTest < Minitest::Test
       context "latency option" do
 
         setup do
-          @output = AudioPlayback::Output.new(@test_id, :latency => 20)
+          @output = AudioPlayback::Device::Output.new(@test_id, :latency => 20)
         end
 
         should "return correct latency" do
@@ -92,7 +92,7 @@ class AudioPlayback::OutputTest < Minitest::Test
       context "no options" do
 
         setup do
-          @output = AudioPlayback::Output.new(@test_id)
+          @output = AudioPlayback::Device::Output.new(@test_id)
         end
 
         should "return correct latency" do
@@ -110,7 +110,7 @@ class AudioPlayback::OutputTest < Minitest::Test
       setup do
         @test_id = (0..TestHelper::OUTPUT_INFO.size-1).to_a.sample
         @test_info = TestHelper::OUTPUT_INFO[@test_id]
-        @output = AudioPlayback::Output.new(@test_id)
+        @output = AudioPlayback::Device::Output.new(@test_id)
       end
 
       should "return correct num_channels" do
@@ -118,14 +118,14 @@ class AudioPlayback::OutputTest < Minitest::Test
         assert_kind_of Fixnum, @output.num_channels
         assert_equal @test_info[:maxOutputChannels], @output.num_channels
       end
-    
+
     end
 
     context "#id" do
 
       setup do
         @test_id = (0..TestHelper::OUTPUT_INFO.size-1).to_a.sample
-        @output = AudioPlayback::Output.new(@test_id)
+        @output = AudioPlayback::Device::Output.new(@test_id)
       end
 
       should "return correct id" do

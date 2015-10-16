@@ -1,3 +1,6 @@
+require "audio-playback/device/output"
+require "audio-playback/device/stream"
+
 module AudioPlayback
 
   # Audio IO devices

@@ -51,7 +51,7 @@ module TestHelper
     FFI::PortAudio::API.stubs(:Pa_GetDefaultOutputDevice).returns(TestHelper::DEFAULT_OUTPUT_ID)
     FFI::PortAudio::API.stubs(:Pa_Initialize).returns(true)
     FFI::PortAudio::API.stubs(:Pa_Terminate).returns(true)
-    AudioPlayback::Stream.any_instance.stubs(:close).returns(true)
+    AudioPlayback::Device::Stream.any_instance.stubs(:close).returns(true)
   end
 
 end

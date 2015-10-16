@@ -33,7 +33,7 @@ module AudioPlayback
         @sound = sound
         @buffer_size = options[:buffer_size] || DEFAULT[:buffer_size]
         @output = output
-        @stream = options[:stream] || Stream.new(@output, options)
+        @stream = options[:stream] || Device::Stream.new(@output, options)
         populate(options)
         report(options[:logger]) if options[:logger]
       end

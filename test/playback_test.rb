@@ -7,17 +7,17 @@ class AudioPlayback::PlaybackTest < Minitest::Test
     setup do
       @path = "test/media/1-mono-44100.wav"
       @sound = AudioPlayback::Sound.load(@path)
-      @output = AudioPlayback::Output.by_id(0)
+      @output = AudioPlayback::Device::Output.by_id(0)
     end
 
     context ".play" do
 
       setup do
-        AudioPlayback::Stream.any_instance.expects(:start).once.returns(true)
+        AudioPlayback::Device::Stream.any_instance.expects(:start).once.returns(true)
       end
 
       teardown do
-        AudioPlayback::Stream.any_instance.unstub(:start)
+        AudioPlayback::Device::Stream.any_instance.unstub(:start)
       end
 
       should "start playback" do
@@ -32,11 +32,11 @@ class AudioPlayback::PlaybackTest < Minitest::Test
 
       setup do
         @playback = AudioPlayback::Playback.new(@sound, @output)
-        AudioPlayback::Stream.any_instance.expects(:start).once.returns(true)
+        AudioPlayback::Device::Stream.any_instance.expects(:start).once.returns(true)
       end
 
       teardown do
-        AudioPlayback::Stream.any_instance.unstub(:start)
+        AudioPlayback::Device::Stream.any_instance.unstub(:start)
       end
 
       should "start playback" do
@@ -50,11 +50,11 @@ class AudioPlayback::PlaybackTest < Minitest::Test
 
       setup do
         @playback = AudioPlayback::Playback.new(@sound, @output)
-        AudioPlayback::Stream.any_instance.expects(:block).once.returns(true)
+        AudioPlayback::Device::Stream.any_instance.expects(:block).once.returns(true)
       end
 
       teardown do
-        AudioPlayback::Stream.any_instance.unstub(:block)
+        AudioPlayback::Device::Stream.any_instance.unstub(:block)
       end
 
       should "defer to stream" do

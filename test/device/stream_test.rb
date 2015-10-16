@@ -1,19 +1,19 @@
 require "helper"
 
-class AudioPlayback::StreamTest < Minitest::Test
+class AudioPlayback::Device::StreamTest < Minitest::Test
 
   context "Stream" do
 
     setup do
       @path = "test/media/1-mono-44100.wav"
       @sound = AudioPlayback::Sound.load(@path)
-      @output = AudioPlayback::Output.by_id(0)
+      @output = AudioPlayback::Device::Output.by_id(0)
     end
 
     context "#exit_callback" do
 
       setup do
-        @stream = AudioPlayback::Stream.new(@output)
+        @stream = AudioPlayback::Device::Stream.new(@output)
         @stream.expects(:close).once
       end
 
@@ -30,7 +30,7 @@ class AudioPlayback::StreamTest < Minitest::Test
     context "#play" do
 
       setup do
-        @stream = AudioPlayback::Stream.new(@output)
+        @stream = AudioPlayback::Device::Stream.new(@output)
         @playback = AudioPlayback::Playback.new(@sound, @output)
         @stream.expects(:report).once
         @stream.expects(:open_playback).once
