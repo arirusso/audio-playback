@@ -197,10 +197,11 @@ module AudioPlayback
       def ensure_num_channels(data, num, options = {})
         data.each do |frame|
           difference = num - frame.size
+          frame_obj = Frame.new(frame)
           if difference > 0
-            Frame.fill(frame, num, difference, :channels => options[:channels])
+            frame_obj.fill(num, difference, :channels => options[:channels])
           else
-            frame.slice!(num..-1)
+            frame_obj.truncate(num)
           end
         end
       end
@@ -215,9 +216,19 @@ module AudioPlayback
 
     end
 
-    module Frame
+    class Frame
 
-      extend self
+      extend Forwardable
+
+      def_delegators :@frame, :[]
+
+      def initialize(frame)
+        @frame = frame
+      end
+
+      def truncate(num)
+        @frame.slice!(num..-1)
+      end
 
       # @param [<Array<Float>, Array<Array<Float>>] frame
       # @param [Fixnum] size
@@ -225,11 +236,11 @@ module AudioPlayback
       # @param [Hash] options
       # @option options [Array<Fixnum>] :channels
       # @return [Boolean]
-      def fill(frame, size, difference, options = {})
+      def fill(size, difference, options = {})
         if (channels = options[:channels]).nil?
-          frame.fill(frame.last, frame.size, difference)
+          @frame.fill(@frame.last, @frame.size, difference)
         else
-          fill_for_channels(frame, size, channels)
+          fill_for_channels(size, channels)
         end
         true
       end
@@ -240,12 +251,12 @@ module AudioPlayback
       # @param [Fixnum] size
       # @param [Array<Fixnum>] channels
       # @return [Boolean]
-      def fill_for_channels(frame, size, channels)
-        values = frame.dup
-        frame.fill(0, 0, size)
+      def fill_for_channels(size, channels)
+        values = @frame.dup
+        @frame.fill(0, 0, size)
         channels.each do |channel|
           value = values[channel] || values.first
-          frame[channel] = value
+          @frame[channel] = value
         end
         true
       end
