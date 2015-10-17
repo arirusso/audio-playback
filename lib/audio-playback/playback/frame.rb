@@ -10,7 +10,7 @@ module AudioPlayback
       attr_reader :frame
       def_delegators :@frame, :[], :all?, :any?, :count, :each, :flatten, :map, :size, :to_ary
 
-      # @param [Array<Float>, Float] frame
+      # @param [Array<Float>, Frame] frame
       def initialize(frame)
         @frame = frame.frame if frame.kind_of?(Frame)
         @frame ||= frame
