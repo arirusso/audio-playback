@@ -2,6 +2,7 @@ module AudioPlayback
 
   module Playback
 
+    # A single frame of audio data in the FrameSet
     class Frame
 
       extend Forwardable
@@ -9,39 +10,54 @@ module AudioPlayback
       attr_reader :frame
       def_delegators :@frame, :[], :all?, :any?, :count, :each, :flatten, :map, :size, :to_ary
 
+      # @param [Array<Float>, Float] frame
       def initialize(frame)
         @frame = frame.frame if frame.kind_of?(Frame)
         @frame ||= frame
       end
 
+      # Truncate the frame to the given size
+      # @param [Fixnum] num
+      # @return [Frame]
       def truncate(num)
         @frame.slice!(num..-1)
+        self
       end
 
-      # @param [<Array<Float>, Array<Array<Float>>] frame
-      # @param [Fixnum] size
-      # @param [Fixnum] difference
+      # Fill up the given number of channels at the end of the frame with duplicate data from the last
+      #   existing channel
+      # @param [Fixnum] num
       # @param [Hash] options
       # @option options [Array<Fixnum>] :channels
+      # @option options [Fixnum] :num_channels
       # @return [Boolean]
-      def fill(size, difference, options = {})
+      def fill(num, options = {})
         if (channels = options[:channels]).nil?
-          @frame.fill(@frame.last, @frame.size, difference)
+          @frame.fill(@frame.last, @frame.size, num)
         else
-          fill_for_channels(size, channels)
+          fill_for_channels(options[:num_channels], channels)
         end
         true
       end
 
       private
 
-      # @param [<Array<Float>, Array<Array<Float>>] frame
-      # @param [Fixnum] size
+      # Zero out the given number of channels in the frame starting with the given index
+      # @param [Fixnum] index
+      # @param [Fixnum] num_channels
+      # @return [Frame]
+      def silence_channels(index, num_channels)
+        @frame.fill(0, index, num_channels)
+        self
+      end
+
+      # Fill the entire frame for the given channels
+      # @param [Fixnum] num_channels
       # @param [Array<Fixnum>] channels
       # @return [Boolean]
-      def fill_for_channels(size, channels)
+      def fill_for_channels(num_channels, channels)
         values = @frame.dup
-        @frame.fill(0, 0, size)
+        silence_channels(0, num_channels)
         channels.each do |channel|
           value = values[channel] || values.first
           @frame[channel] = value
