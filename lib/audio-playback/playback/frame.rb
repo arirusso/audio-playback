@@ -28,8 +28,8 @@ module AudioPlayback
       #   existing channel
       # @param [Fixnum] num
       # @param [Hash] options
-      # @option options [Array<Fixnum>] :channels
-      # @option options [Fixnum] :num_channels
+      # @option options [Array<Fixnum>] :channels (required if :num_channels is provided)
+      # @option options [Fixnum] :num_channels (required if :channels is provided)
       # @return [Boolean]
       def fill(num, options = {})
         if (channels = options[:channels]).nil?
