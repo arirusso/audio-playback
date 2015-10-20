@@ -102,18 +102,28 @@ module AudioPlayback
         end
       end
 
+      # Populate the playback channels
+      # @param [Hash] options
+      # @option options [Fixnum, Array<Fixnum>] :channels (or: :channel)
+      # @return [Boolean]
       def populate_channels(options = {})
         request = options[:channels] || options[:channel]
         if request.nil?
           @num_channels = @output.num_channels
+          true
         else
           populate_requested_channels(request)
         end
       end
 
+      # Populate the playback action
+      # @param [Hash] options
+      # @option options [Fixnum, Array<Fixnum>] :channels (or: :channel)
+      # @return [Playback::Action]
       def populate(options = {})
         populate_channels(options)
         @data = StreamData.to_pointer(self)
+        self
       end
 
     end
