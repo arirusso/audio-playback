@@ -128,6 +128,8 @@ module AudioPlayback
 
     end
 
+    # Shortcut to Action.new
+    # @return [Playback::Action]
     def self.new(*args)
       Action.new(*args)
     end
