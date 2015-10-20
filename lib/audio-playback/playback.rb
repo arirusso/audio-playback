@@ -76,6 +76,9 @@ module AudioPlayback
 
       private
 
+      # Are the requested channels available in the current environment?
+      # @param [Array<Fixnum>] channels
+      # @return [Boolean]
       def validate_requested_channels(channels)
         if channels.count > @output.num_channels
           raise "Only #{@output.num_channels} channels available on #{@output.name} output"
@@ -84,12 +87,18 @@ module AudioPlayback
         true
       end
 
+      # Validate and populate the variables containing information about the requested channels
+      # @param [Fixnum, Array<Fixnum>] request Channel(s)
+      # @return [Boolean]
       def populate_requested_channels(request)
         request = Array(request)
         requested_channels = request.map(&:to_i).uniq
         if validate_requested_channels(requested_channels)
           @num_channels = requested_channels.count
           @channels = requested_channels
+          true
+        else
+          false
         end
       end
 
