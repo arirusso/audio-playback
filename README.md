@@ -58,6 +58,7 @@ options = {
 
 @playback = AudioPlayback.play("test/media/1-stereo-44100.wav", options)
 
+# Play in the foreground
 @playback.block
 
 ```
