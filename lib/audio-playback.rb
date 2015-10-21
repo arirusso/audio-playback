@@ -44,7 +44,6 @@ module AudioPlayback
   # @return [Array<String>]
   def self.list_devices
     Device::Output.list
-    devices
   end
 
   # Ensure that the audio system is initialized
