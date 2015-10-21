@@ -47,6 +47,7 @@ Or if you're using Bundler, add this to your Gemfile
 ```ruby
 require "audio-playback"
 
+# Prompt the user to select an audio output
 @output = AudioPlayback::Device::Output.gets
 
 options = {
