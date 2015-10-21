@@ -29,7 +29,7 @@ Or if you're using Bundler, add this to your Gemfile
 
 * `-b` Buffer size in bytes.  Defaults to 4096
 
-* `-c` Output audio to the given channel(s).  Eg `-c 0,1` will direct audio to channels 0 and 1.  Defaults to use all available channels
+* `-c` Output audio to the given channel(s).  Eg `-c 0,1` will direct audio to channels 0 and 1.  Defaults to use channels 0 and 1 on the selected device
 
 * `-o` Output device id or name.  Defaults to the system default
 
@@ -67,7 +67,7 @@ options = {
 
 * `:buffer_size` Buffer size in bytes.  Defaults to 4096
 
-* `:channel` or `:channels` Output audio to the given channel(s).  Eg `:channels => [0,1]` will direct the audio to channels 0 and 1. Defaults to use all available channels
+* `:channel` or `:channels` Output audio to the given channel(s).  Eg `:channels => [0,1]` will direct the audio to channels 0 and 1. Defaults to use channels 0 and 1 on the selected device
 
 * `:latency` Latency in seconds.  Defaults to use the default latency for the selected output device
 
