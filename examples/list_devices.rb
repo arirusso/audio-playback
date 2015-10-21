@@ -5,6 +5,6 @@ $:.unshift(File.join("..", "lib"))
 
 require "audio-playback"
 
-AudioPlayback::Output.all.each do |output|
+AudioPlayback::Device::Output.all.each do |output|
   puts "#{output.id}). #{output.name}"
 end
