@@ -25,6 +25,11 @@ module AudioPlayback
         :name => "Latency"
       },
 
+      :list_devices => {
+        :long => "--list-devices",
+        :name => "List devices"
+      },
+
       :logger => {
         :short => "-v",
         :long => "--verbose",

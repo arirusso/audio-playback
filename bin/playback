@@ -58,5 +58,9 @@ end
 
 parser.parse!
 
-playback = AudioPlayback.play(ARGV[0], options)
-playback.block
+if options[:list_devices]
+  AudioPlayback.list_devices
+else
+  playback = AudioPlayback.play(ARGV[0], options)
+  playback.block
+end

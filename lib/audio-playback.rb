@@ -40,6 +40,14 @@ module AudioPlayback
     Playback.play(sound, output, options)
   end
 
+  # List the available audio output devices
+  # @return [Array<String>]
+  def self.list_devices
+    devices = Device::Output.all.map { |output| "#{output.id}. #{output.name}" }
+    devices.each { |device| $>.puts(device) }
+    devices
+  end
+
   # Ensure that the audio system is initialized
   # @return [Boolean]
   def self.ensure_initialized
