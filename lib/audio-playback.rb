@@ -43,8 +43,7 @@ module AudioPlayback
   # List the available audio output devices
   # @return [Array<String>]
   def self.list_devices
-    devices = Device::Output.all.map { |output| "#{output.id}. #{output.name}" }
-    devices.each { |device| $>.puts(device) }
+    Device::Output.list
     devices
   end
 

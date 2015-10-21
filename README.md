@@ -33,7 +33,10 @@ Or if you're using Bundler, add this to your Gemfile
 
 * `-o` Output device id or name.  Defaults to the system default
 
-* `-v` Verbose
+* `-v` or `--verbose` Verbose
+
+* `--list-devices` List the available audio output devices
+
 
 #### example:
 
@@ -44,13 +47,17 @@ Or if you're using Bundler, add this to your Gemfile
 ```ruby
 require "audio-playback"
 
+@output = AudioPlayback::Device::Output.gets
+
 options = {
   :channels => [0,1],
-  :latency => 1
+  :latency => 1,
+  :output_device => @output
 }
 
-playback = AudioPlayback.play("test/media/1-stereo-44100.wav", options)
-playback.block
+@playback = AudioPlayback.play("test/media/1-stereo-44100.wav", options)
+
+@playback.block
 
 ```
 

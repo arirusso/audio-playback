@@ -12,6 +12,35 @@ module AudioPlayback
         Device.outputs
       end
 
+      # Prints ids and names of each device to standard out
+      # @return [Array<String>]
+      def self.list
+        all.map do |device|
+          name = "#{device.id}. #{device.name}"
+          $>.puts(name)
+          name
+        end
+      end
+
+      # Streamlined console prompt that asks the user (via standard in) to select a device
+      # When their input is received, the device is selected and enabled
+      # @return [Output]
+      def self.gets
+        device = nil
+        puts ""
+        puts "Select an audio output..."
+        while device.nil?
+          list
+          print "> "
+          selection = $stdin.gets.chomp
+          if selection != ""
+            selection = Integer(selection) rescue nil
+            device = all.find { |d| d.id == selection } unless selection.nil?
+          end
+        end
+        device
+      end
+
       # Select an output device by ID
       # @param [Fixnum] id
       # @return [Output]

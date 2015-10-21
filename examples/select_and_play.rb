@@ -7,9 +7,15 @@ require "audio-playback"
 
 MEDIA_DIRECTORY = "../test/media"
 
+# Select an output
+@output = AudioPlayback::Device::Output.gets
+
 # find audio files
 audio_files = Dir.entries(MEDIA_DIRECTORY)
 audio_files.reject! { |file| file.match(/^\.{1,2}$/) }
+
+puts
+puts "Select an audio file..."
 
 # print list of files
 audio_files.each_with_index { |file, i| puts("#{i+1}. #{file}") }
@@ -25,5 +31,5 @@ while filename.nil? do
 end
 
 # play file
-playback = AudioPlayback.play("#{MEDIA_DIRECTORY}/#{filename}")
-playback.block
+@playback = AudioPlayback.play("#{MEDIA_DIRECTORY}/#{filename}", :output_device => @output)
+@playback.block
