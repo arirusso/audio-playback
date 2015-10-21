@@ -24,7 +24,7 @@ require "audio-playback/sound"
 # Play audio files
 module AudioPlayback
 
-  VERSION = "0.0.1"
+  VERSION = "0.0.2"
 
   # Convenience method to play an audio file
   # @param [::File, String] file_path
