@@ -1,15 +1,19 @@
 # Audio Playback
 
-Play audio files at the command line or using Ruby
+A gem for playing audio files with Ruby or at the command line
+
+Under the hood, the portaudio and libsndfile libraries are used, enabling the gem to be cross-platform on any systems where these libraries are available
 
 ## Installation
 
 These packages must be installed first:
 
-* portaudio
-* libsndfile
+* portaudio (link)
+* libsndfile (link)
 
-Install the gem using
+Both are available in many OS package managers.  For other OSes as well as those who wish to compile themselves, follow the links above for more information
+
+Install the gem itself using
 
     gem install audio-playback
 
