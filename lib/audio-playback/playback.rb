@@ -70,6 +70,8 @@ module AudioPlayback
         frames * FRAME_SIZE.size
       end
 
+      # Has a different channel configuration than the default been requested?
+      # @return [Boolean]
       def channels_requested?
         !@channels.nil?
       end
