@@ -4,6 +4,19 @@ module AudioPlayback
 
     class Stream < FFI::PortAudio::Stream
 
+      # Keep track of all streams
+      # @return [Array<Stream>]
+      def self.streams
+        @streams ||= []
+      end
+
+      # Close and clean up all streams
+      # @return [Boolean]
+      def self.close_all
+        @streams.each(&:close)
+        true
+      end
+
       # @param [Output] output
       # @param [Hash] options
       # @option options [IO] logger
@@ -13,6 +26,7 @@ module AudioPlayback
         @input = nil
         @output = output.resource
         initialize_exit_callback(:logger => options[:logger])
+        Stream.streams << self
       end
 
       # Perform the given playback
@@ -36,14 +50,19 @@ module AudioPlayback
       # Block process until the current playback finishes
       # @return [Boolean]
       def block
-        while active?
-          sleep(0.0001)
+        begin
+          while active?
+            sleep(0.0001)
+          end
+          while FFI::PortAudio::API.Pa_IsStreamActive(@stream.read_pointer) != :paNoError
+            sleep(1)
+          end
+        rescue SystemExit, Interrupt
+          Stream.close_all
+        ensure
+          exit
+          true
         end
-        while FFI::PortAudio::API.Pa_IsStreamActive(@stream.read_pointer) != :paNoError
-          sleep(1)
-        end
-        exit
-        true
       end
 
       private
