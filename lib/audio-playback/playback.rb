@@ -44,6 +44,7 @@ module AudioPlayback
         @stream.play(self)
         self
       end
+      alias_method :play, :start
 
       # Block process until playback finishes
       # @return [Stream]
