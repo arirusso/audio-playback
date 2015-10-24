@@ -10,13 +10,6 @@ module AudioPlayback
         @streams ||= []
       end
 
-      # Close and clean up all streams
-      # @return [Boolean]
-      def self.close_all
-        @streams.each(&:close)
-        true
-      end
-
       # @param [Output] output
       # @param [Hash] options
       # @option options [IO] logger
@@ -58,7 +51,7 @@ module AudioPlayback
             sleep(1)
           end
         rescue SystemExit, Interrupt
-          Stream.close_all
+          # Control-C
         ensure
           exit
           true
@@ -80,7 +73,7 @@ module AudioPlayback
         logger = options[:logger]
         logger.puts("Exit") if logger
         unless @stream.nil?
-          close
+          #close
           FFI::PortAudio::API.Pa_Terminate
         end
         true
