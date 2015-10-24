@@ -79,6 +79,15 @@ options = {
 
 * `:output_device` Output device id or name
 
+#### More Examples
+
+More Ruby code examples:
+
+* [List devices](https://github.com/arirusso/audio-playback/blob/master/examples/list_devices.rb)
+* [Select a file and play](https://github.com/arirusso/audio-playback/blob/master/examples/select_and_play.rb)
+* [Play multiple files](https://github.com/arirusso/audio-playback/blob/master/examples/play_multiple.rb)
+
+
 ## License
 
 Licensed under Apache 2.0, See the file LICENSE
