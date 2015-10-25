@@ -11,7 +11,6 @@ module AudioPlayback
       def self.mix(datas)
         length = datas.map(&:size).max
         depth = datas.count
-        new_data = []
 
         (0..length-1).to_a.map do |i|
           frames = datas.map { |sound_data| sound_data[i] }
