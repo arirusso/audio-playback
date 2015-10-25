@@ -20,8 +20,14 @@ module AudioPlayback
       # @param [Playback::Action] playback
       # @return [Array<Array<Float>>]
       def populate(playback)
-        data = playback.sound.data.dup
-        data = ensure_array_frames(data)
+        sound_data = playback.sounds.map(&:data)
+        sound_data = sound_data.map { |data| ensure_array_frames(data) }
+        data = if sound_data.count > 1
+          Mixer.mix(sound_data)
+        else
+          sound_data[0]
+        end
+
         data = to_frame_objects(data)
 
         @data = if channels_match?(playback)
@@ -35,7 +41,7 @@ module AudioPlayback
       # @param [Playback::Action] playback
       # @return [Boolean]
       def channels_match?(playback)
-        playback.sound.num_channels == playback.num_channels && playback.channels.nil?
+        playback.sounds.last.num_channels == playback.num_channels && playback.channels.nil?
       end
 
       # (Re-)build the channel structure of the frame set

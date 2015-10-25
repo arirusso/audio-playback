@@ -1,3 +1,7 @@
+# modules
+require "audio-playback/playback/mixer"
+
+# classes
 require "audio-playback/playback/frame"
 require "audio-playback/playback/frame_set"
 require "audio-playback/playback/stream_data"
@@ -19,23 +23,31 @@ module AudioPlayback
 
       extend Forwardable
 
-      attr_reader :buffer_size, :channels, :data, :output, :num_channels, :sound, :stream
-      def_delegators :@sound, :audio_file, :sample_rate, :size
+      attr_reader :buffer_size, :channels, :data, :output, :num_channels, :sounds, :stream
+      def_delegators :@sounds, :audio_files
 
-      # @param [Sound] sound
+      # @param [Array<Sound>, Sound] sounds
       # @param [Output] output
       # @param [Hash] options
       # @option options [Fixnum] :buffer_size
       # @option options [Array<Fixnum>, Fixnum] :channels (or: :channel)
       # @option options [IO] :logger
       # @option options [Stream] :stream
-      def initialize(sound, output, options = {})
-        @sound = sound
+      def initialize(sounds, output, options = {})
+        @sounds = Array(sounds)
         @buffer_size = options[:buffer_size] || DEFAULT[:buffer_size]
         @output = output
         @stream = options[:stream] || Device::Stream.new(@output, options)
         populate(options)
         report(options[:logger]) if options[:logger]
+      end
+
+      def sample_rate
+        @sounds.last.sample_rate
+      end
+
+      def size
+        @sounds.map(&:size).max
       end
 
       # Start playback
@@ -56,7 +68,8 @@ module AudioPlayback
       # @param [IO] logger
       # @return [Boolean]
       def report(logger)
-        logger.puts("Playback report for #{@sound.audio_file.path}")
+        paths = @sounds.map(&:audio_file).map(&:path)
+        logger.puts("Playback report for #{paths}")
         logger.puts("  Number of channels: #{@num_channels}")
         logger.puts("  Direct audio to channels #{@channels.to_s}") unless @channels.nil?
         logger.puts("  Buffer size: #{@buffer_size}")
@@ -67,7 +80,7 @@ module AudioPlayback
       # Total size of the playback's sound frames in bytes
       # @return [Fixnum]
       def data_size
-        frames = (@sound.size * @num_channels) + METADATA.count
+        frames = (size * @num_channels) + METADATA.count
         frames * FRAME_SIZE.size
       end
 

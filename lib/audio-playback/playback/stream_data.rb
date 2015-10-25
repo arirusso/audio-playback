@@ -41,7 +41,7 @@ module AudioPlayback
         @data.unshift(0.0) # 3. is_eof
         @data.unshift(0.0) # 2. counter
         @data.unshift(@playback.output.num_channels.to_f) # 1. num_channels
-        @data.unshift(@playback.sound.size.to_f) # 0. sample size
+        @data.unshift(@playback.size.to_f) # 0. sample size
         @data
       end
 
