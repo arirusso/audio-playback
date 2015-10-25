@@ -15,17 +15,15 @@ audio_files = Dir.entries(MEDIA_DIRECTORY)
 audio_files.reject! { |file| file.match(/^\.{1,2}$/) }
 
 # Select two random files
-@files = audio_files.sample(2)
+@files = audio_files.last(2)
 
 # Initialize
 @sounds = @files.map { |filename| AudioPlayback::Sound.load("#{MEDIA_DIRECTORY}/#{filename}") }
 
-@playbacks = @sounds.map do |sound|
-  AudioPlayback::Playback.new(sound, @output)
-end
+@playback = AudioPlayback::Playback.new(@sounds, @output)
 
 # Start playback
-@playbacks.each(&:start)
+@playback.start
 
 # Play in foreground
-@playbacks.last.block
+@playback.block
