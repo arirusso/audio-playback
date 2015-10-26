@@ -1,9 +1,6 @@
-# modules
-require "audio-playback/playback/mixer"
-
-# classes
 require "audio-playback/playback/frame"
 require "audio-playback/playback/frame_set"
+require "audio-playback/playback/mixer"
 require "audio-playback/playback/stream_data"
 
 module AudioPlayback
