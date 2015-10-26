@@ -16,32 +16,31 @@ module AudioPlayback
 
       private
 
+      def build_for_sound(playback, sound)
+        data = sound.data
+        data = ensure_array_frames(data)
+        data = to_frame_objects(data)
+        data = build_channels(data, playback) if !channels_match?(playback, sound)
+        data
+      end
+
       # Populate the Container
       # @param [Playback::Action] playback
       # @return [Array<Array<Float>>]
       def populate(playback)
-        sound_data = playback.sounds.map(&:data)
-        sound_data = sound_data.map { |data| ensure_array_frames(data) }
-        data = if sound_data.count > 1
-          Mixer.mix(sound_data)
+        data = playback.sounds.map { |sound| build_for_sound(playback, sound) }
+        @data = if data.count > 1
+          Mixer.mix(data)
         else
-          sound_data[0]
-        end
-
-        data = to_frame_objects(data)
-
-        @data = if channels_match?(playback)
-          data
-        else
-          build_channels(data, playback)
+          data[0]
         end
       end
 
       # Does the channel structure of the playback action match the channel structure of the sound?
       # @param [Playback::Action] playback
       # @return [Boolean]
-      def channels_match?(playback)
-        playback.sounds.last.num_channels == playback.num_channels && playback.channels.nil?
+      def channels_match?(playback, sound)
+        sound.num_channels == playback.num_channels && playback.channels.nil?
       end
 
       # (Re-)build the channel structure of the frame set
