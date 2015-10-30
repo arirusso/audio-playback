@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 $:.unshift(File.join("..", "lib"))
 
-# Playback multiple files simultaneously
+# Playback multiple files simultaneously in one stream
 
 require "audio-playback"
 
