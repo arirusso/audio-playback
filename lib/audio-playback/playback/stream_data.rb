@@ -6,6 +6,8 @@ module AudioPlayback
     class StreamData
 
       # A C pointer version of the audio data
+      # @param [Playback::Action] playback
+      # @return [FFI::Pointer]
       def self.to_pointer(playback)
         stream_data = new(playback)
         stream_data.to_pointer

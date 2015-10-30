@@ -16,6 +16,10 @@ module AudioPlayback
 
       private
 
+      # Build the frame set data for the given playback action and sound
+      # @param [Playback::Action] playback
+      # @param [Sound] sound
+      # @return [Array<Array<Float>>]
       def build_for_sound(playback, sound)
         data = sound.data
         data = ensure_array_frames(data)
