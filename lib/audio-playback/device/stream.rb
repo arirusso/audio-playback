@@ -53,7 +53,6 @@ module AudioPlayback
         rescue SystemExit, Interrupt
           # Control-C
         ensure
-          exit
           true
         end
       end
