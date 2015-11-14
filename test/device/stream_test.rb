@@ -35,6 +35,7 @@ class AudioPlayback::Device::StreamTest < Minitest::Test
         @stream.expects(:report).once
         @stream.expects(:open_playback).once
         @stream.expects(:start).once
+        @result = @stream.play(@playback)
       end
 
       teardown do
@@ -44,7 +45,11 @@ class AudioPlayback::Device::StreamTest < Minitest::Test
       end
 
       should "return self" do
-        assert_equal @stream, @stream.play(@playback)
+        assert_equal @stream, @result
+      end
+
+      should "flag as playing" do
+        assert @stream.playing?
       end
 
     end
