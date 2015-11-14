@@ -87,7 +87,7 @@ More Ruby code examples:
 * [Select a file and play](https://github.com/arirusso/audio-playback/blob/master/examples/select_and_play.rb)
 * [Play multiple files in one stream simultaneously](https://github.com/arirusso/audio-playback/blob/master/examples/play_multiple_simultaneous.rb)
 * [Play multiple files in one stream sequentially](https://github.com/arirusso/audio-playback/blob/master/examples/play_multiple_sequential.rb)
-* [Play multiple files in multiple streams](https://github.com/arirusso/audio-playback/blob/master/examples/play_multiple.rb)
+* [Play multiple files in multiple streams](https://github.com/arirusso/audio-playback/blob/master/examples/play_multiple_streams.rb)
 
 ## License
 
