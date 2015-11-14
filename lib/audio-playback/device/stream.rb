@@ -4,6 +4,9 @@ module AudioPlayback
 
     class Stream < FFI::PortAudio::Stream
 
+      attr_reader :is_playing
+      alias_method :playing?, :is_playing
+
       # Keep track of all streams
       # @return [Array<Stream>]
       def self.streams
@@ -14,6 +17,7 @@ module AudioPlayback
       # @param [Hash] options
       # @option options [IO] logger
       def initialize(output, options = {})
+        @is_playing = false
         @is_muted = false
         @gain = 1.0
         @input = nil
@@ -28,6 +32,7 @@ module AudioPlayback
       # @option options [IO] logger
       # @return [Stream]
       def play(playback, options = {})
+        @is_playing = true
         report(playback, options[:logger]) if options[:logger]
         open_playback(playback)
         start
@@ -53,6 +58,7 @@ module AudioPlayback
         rescue SystemExit, Interrupt
           # Control-C
         ensure
+          @is_playing = false
           true
         end
       end
@@ -75,6 +81,7 @@ module AudioPlayback
           #close
           FFI::PortAudio::API.Pa_Terminate
         end
+        @is_playing = false
         true
       end
 
