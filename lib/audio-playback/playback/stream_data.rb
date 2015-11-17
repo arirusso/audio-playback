@@ -19,6 +19,15 @@ module AudioPlayback
         populate
       end
 
+      def reset
+        indexes = [
+          Playback::METADATA.index(:pointer),
+          Playback::METADATA.index(:is_eof)
+        ]
+        indexes.each { |index| @data[index] = 0.0 }
+        true
+      end
+
       # A C pointer version of the audio data
       # @return [FFI::Pointer]
       def to_pointer

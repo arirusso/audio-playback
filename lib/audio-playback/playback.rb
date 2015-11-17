@@ -22,7 +22,8 @@ module AudioPlayback
 
       attr_reader :buffer_size, :channels, :data, :output, :num_channels, :sounds, :stream
       def_delegators :@sounds, :audio_files
-
+      def_delegators :@data, :reset
+      
       # @param [Array<Sound>, Sound] sounds
       # @param [Output] output
       # @param [Hash] options
@@ -135,7 +136,7 @@ module AudioPlayback
       # @return [Playback::Action]
       def populate(options = {})
         populate_channels(options)
-        @data = StreamData.to_pointer(self)
+        @data = StreamData.new(self)
         self
       end
 

@@ -34,7 +34,11 @@ module AudioPlayback
       def play(playback, options = {})
         @is_playing = true
         report(playback, options[:logger]) if options[:logger]
-        open_playback(playback)
+        if @stream.nil?
+          open_playback(playback)
+        else
+          continue(playback)
+        end
         start
         self
       end
@@ -57,13 +61,24 @@ module AudioPlayback
           end
         rescue SystemExit, Interrupt
           # Control-C
-        ensure
           @is_playing = false
-          true
+          exit
         end
+        @is_playing = false
+        true
       end
 
       private
+
+      def open_stream(playback)
+        @userdata = playback.data.to_pointer
+        FFI::PortAudio::API.Pa_OpenStream(@stream, @input, @output, @freq, @frames, @flags, @method, @userdata)
+      end
+
+      def continue(playback)
+        playback.reset
+        open_stream(playback)
+      end
 
       # Initialize the callback that's fired when the stream exits
       # @return [Stream]
@@ -89,7 +104,12 @@ module AudioPlayback
       # @param [Playback] playback
       # @return [Boolean]
       def open_playback(playback)
-        open(@input, @output, playback.sample_rate.to_i, playback.buffer_size, FFI::PortAudio::API::NoFlag, playback.data)
+        @freq = playback.sample_rate.to_i
+        @frames = playback.buffer_size
+        @flags = FFI::PortAudio::API::NoFlag
+        @stream = FFI::Buffer.new(:pointer)
+        @method = method(:process)
+        open_stream(playback)
         true
       end
 
