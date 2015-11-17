@@ -15,9 +15,9 @@ class AudioPlayback::Playback::StreamDataTest < Minitest::Test
         @data = @playback.data
       end
 
-      should "return a pointer" do
+      should "return a stream data object" do
         refute_nil @data
-        assert_kind_of FFI::Pointer, @data
+        assert_kind_of AudioPlayback::Playback::StreamData, @data
       end
 
     end
