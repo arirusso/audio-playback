@@ -70,14 +70,22 @@ module AudioPlayback
 
       private
 
+      # Open the stream resource for playback
+      # @param [Playback] playback
+      # @return [Boolean]
       def open_stream(playback)
         @userdata = playback.data.to_pointer
         FFI::PortAudio::API.Pa_OpenStream(@stream, @input, @output, @freq, @frames, @flags, @method, @userdata)
+        true
       end
 
+      # Reset the stream and continue playback
+      # @param [Playback] playback
+      # @return [Boolean]
       def continue(playback)
         playback.reset
         open_stream(playback)
+        true
       end
 
       # Initialize the callback that's fired when the stream exits

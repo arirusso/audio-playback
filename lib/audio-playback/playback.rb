@@ -23,7 +23,7 @@ module AudioPlayback
       attr_reader :buffer_size, :channels, :data, :output, :num_channels, :sounds, :stream
       def_delegators :@sounds, :audio_files
       def_delegators :@data, :reset
-      
+
       # @param [Array<Sound>, Sound] sounds
       # @param [Output] output
       # @param [Hash] options
@@ -40,10 +40,14 @@ module AudioPlayback
         report(options[:logger]) if options[:logger]
       end
 
+      # Sample rate of the playback sound
+      # @return [Fixnum]
       def sample_rate
         @sounds.last.sample_rate
       end
 
+      # Size of the playback sound
+      # @return [Fixnum]
       def size
         @sounds.map(&:size).max
       end

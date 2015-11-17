@@ -19,6 +19,8 @@ module AudioPlayback
         populate
       end
 
+      # Reset the stream metadata
+      # @param [Boolean]
       def reset
         indexes = [
           Playback::METADATA.index(:pointer),
