@@ -33,9 +33,9 @@ module AudioPlayback
       # A C pointer version of the audio data
       # @return [FFI::Pointer]
       def to_pointer
-        pointer = FFI::LibC.malloc(@playback.data_size)
-        pointer.write_array_of_float(@data.flatten)
-        pointer
+        @pointer ||= FFI::LibC.malloc(@playback.data_size)
+        @pointer.write_array_of_float(@data.flatten)
+        @pointer
       end
 
       private
