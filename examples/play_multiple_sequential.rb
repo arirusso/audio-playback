@@ -21,9 +21,9 @@ audio_files.reject! { |file| file.match(/^\.{1,2}$/) }
 @sounds = @files.map { |filename| AudioPlayback::Sound.load("#{MEDIA_DIRECTORY}/#{filename}") }
 
 @stream = nil
-p @sounds.map(&:size)
+
 @sounds.each_with_index do |sound, i|
-p i
+
   @playback = AudioPlayback::Playback.new(@sounds[0], @output, :stream => @stream)
   @stream ||= @playback.stream
 
