@@ -24,7 +24,7 @@ module AudioPlayback
         data = sound.data
         data = ensure_array_frames(data)
         data = to_frame_objects(data)
-        data = build_channels(data, playback) if !channels_match?(playback, sound)
+        data = build_channels(data, playback) unless channels_match?(playback, sound)
         data
       end
 
