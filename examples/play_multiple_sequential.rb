@@ -24,7 +24,7 @@ audio_files.reject! { |file| file.match(/^\.{1,2}$/) }
 
 @sounds.each_with_index do |sound, i|
 
-  @playback = AudioPlayback::Playback.new(@sounds[0], @output, :stream => @stream)
+  @playback = AudioPlayback::Playback.new(@sounds[i], @output, :stream => @stream)
   @stream ||= @playback.stream
 
   # Start playback
