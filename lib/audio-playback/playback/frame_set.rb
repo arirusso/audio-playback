@@ -7,7 +7,7 @@ module AudioPlayback
 
       extend Forwardable
 
-      def_delegators :@data, :[], :[]=, :flatten, :slice, :to_ary, :unshift
+      def_delegators :@data, :[], :[]=, :flatten, :length, :size, :slice, :to_ary, :unshift
 
       # @param [Playback::Action] playback
       def initialize(playback)
@@ -25,6 +25,21 @@ module AudioPlayback
         data = ensure_array_frames(data)
         data = to_frame_objects(data)
         data = build_channels(data, playback) unless channels_match?(playback, sound)
+        data = truncate(data, playback) if playback.truncate?
+        data
+      end
+
+      # Truncate the frameset to the time constraints stored in the playback object
+      # @param [Array<Frame>] data
+      # @param [Playback::Action] playback
+      # @return [Array<Frame>]
+      def truncate(data, playback)
+        unless playback.truncate[:seek].nil?
+          data = data.slice(playback.truncate[:seek], data.length)
+        end
+        unless playback.truncate[:duration].nil?
+          data = data.slice(0, playback.truncate[:duration])
+        end
         data
       end
 

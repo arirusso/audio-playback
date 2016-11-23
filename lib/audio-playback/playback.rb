@@ -20,16 +20,27 @@ module AudioPlayback
 
       extend Forwardable
 
-      attr_reader :buffer_size, :channels, :data, :output, :num_channels, :sounds, :stream
+      attr_reader :buffer_size,
+                  :channels,
+                  :data,
+                  :num_channels,
+                  :output,
+                  :sounds,
+                  :stream,
+                  :truncate
+
       def_delegators :@sounds, :audio_files
-      def_delegators :@data, :reset
+      def_delegators :@data, :reset, :size
 
       # @param [Array<Sound>, Sound] sounds
       # @param [Output] output
       # @param [Hash] options
       # @option options [Fixnum] :buffer_size
       # @option options [Array<Fixnum>, Fixnum] :channels (or: :channel)
+      # @option options [Numeric] :duration Play for given time in seconds
+      # @option options [Numeric] :end_position Stop at given time position in seconds (will use :duration if both are included)
       # @option options [IO] :logger
+      # @option options [Numeric] :seek Start at given time position in seconds
       # @option options [Stream] :stream
       def initialize(sounds, output, options = {})
         @sounds = Array(sounds)
@@ -46,12 +57,6 @@ module AudioPlayback
         @sounds.last.sample_rate
       end
 
-      # Size of the playback sound
-      # @return [Fixnum]
-      def size
-        @sounds.map(&:size).max
-      end
-
       # Start playback
       # @return [Playback]
       def start
@@ -64,6 +69,13 @@ module AudioPlayback
       # @return [Stream]
       def block
         @stream.block
+      end
+
+      # Should playback be truncated?
+      #  eg :start 3 seconds, :duration 1 second
+      # @return [Boolean]
+      def truncate?
+        !@truncate.nil? && !@truncate.values.empty?
       end
 
       # Log a report about playback
@@ -82,7 +94,7 @@ module AudioPlayback
       # Total size of the playback's sound frames in bytes
       # @return [Fixnum]
       def data_size
-        frames = (size * @num_channels) + METADATA.count
+        frames = size * @num_channels
         frames * FRAME_SIZE.size
       end
 
@@ -134,12 +146,68 @@ module AudioPlayback
         end
       end
 
+      # Populate the truncation parameters. Converts the seconds based arguments to number
+      # of frames
+      # @param [Hash] options
+      # @option options [Numeric] :duration Play for given time in seconds
+      # @option options [Numeric] :end_position Stop at given time position in seconds (will use :duration if both are included)
+      # @option options [Numeric] :seek Start at given time position in seconds
+      # @return [Hash]
+      def populate_truncation(options = {})
+        @truncate = {}
+        duration = options[:duration]
+        if options[:seek].nil?
+          duration ||= options[:end_position]
+        else
+          seek = options[:seek]
+          unless options[:end_position].nil?
+            duration ||= options[:end_position] - options[:seek]
+          end
+        end
+        unless seek.nil?
+          @truncate[:seek] = number_of_seconds_to_number_of_frames(seek)
+        end
+        unless duration.nil?
+          @truncate[:duration] = number_of_seconds_to_number_of_frames(duration)
+        end
+        @truncate
+      end
+
+      # Convert number of seconds to number of sample frames given the sample rate
+      # @param [Numeric] num_seconds
+      # @return [Fixnum]
+      def number_of_seconds_to_number_of_frames(num_seconds)
+        (num_seconds * sample_rate).to_i
+      end
+
+      def truncate_valid?(options)
+        options[:end_position].nil? || options[:seek].nil? ||
+          options[:end_position] > options[:seek]
+      end
+
+      # Has truncation been requested in the constructor options?
+      # @param [Hash] options
+      # @option options [Numeric] :duration Play for given time in seconds
+      # @option options [Numeric] :end_position Stop at given time position in seconds (will use :duration if both are included)
+      # @option options [Numeric] :seek Start at given time position in seconds
+      # @return [Boolean]
+      def truncate_requested?(options)
+        !options[:seek].nil? || !options[:duration].nil? || !options[:end_position].nil?
+      end
+
       # Populate the playback action
       # @param [Hash] options
       # @option options [Fixnum, Array<Fixnum>] :channels (or: :channel)
       # @return [Playback::Action]
       def populate(options = {})
         populate_channels(options)
+        if truncate_requested?(options)
+          if !truncate_valid?(options)
+            raise "Seek and end_position options are not valid"
+          else
+            populate_truncation(options)
+          end
+        end
         @data = StreamData.new(self)
         self
       end

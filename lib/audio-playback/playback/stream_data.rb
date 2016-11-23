@@ -5,6 +5,10 @@ module AudioPlayback
     # Playback data for the Device::Stream
     class StreamData
 
+      extend Forwardable
+
+      def_delegators :@data, :length, :size
+
       # A C pointer version of the audio data
       # @param [Playback::Action] playback
       # @return [FFI::Pointer]
@@ -51,10 +55,11 @@ module AudioPlayback
       # Add playback metadata to the stream data
       # @return [FrameSet]
       def add_metadata
+        size = @data.size
         @data.unshift(0.0) # 3. is_eof
         @data.unshift(0.0) # 2. counter
         @data.unshift(@playback.output.num_channels.to_f) # 1. num_channels
-        @data.unshift(@playback.size.to_f) # 0. sample size
+        @data.unshift(size.to_f) # 0. frame set size (without metadata)
         @data
       end
 
