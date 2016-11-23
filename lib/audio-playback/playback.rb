@@ -117,7 +117,8 @@ module AudioPlayback
       # @return [Boolean]
       def validate_requested_channels(channels)
         if channels.count > @output.num_channels
-          raise InvalidChannels.new("Only #{@output.num_channels} channels available on #{@output.name} output")
+          message = "Only #{@output.num_channels} channels available on #{@output.name} output"
+          raise(InvalidChannels.new(message))
           false
         end
         true
@@ -215,10 +216,11 @@ module AudioPlayback
       def populate(options = {})
         populate_channels(options)
         if truncate_requested?(options)
-          if !truncate_valid?(options)
-            raise InvalidTruncation.new("Seek and end_position options are not valid")
-          else
+          if truncate_valid?(options)
             populate_truncation(options)
+          else
+            message = "Truncation options are not valid"
+            raise(InvalidTruncation.new(message))
           end
         end
         @data = StreamData.new(self)
