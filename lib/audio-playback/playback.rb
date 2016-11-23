@@ -15,6 +15,12 @@ module AudioPlayback
 
     METADATA = [:size, :num_channels, :pointer, :is_eof].freeze
 
+    class InvalidChannels < RuntimeError
+    end
+
+    class InvalidTruncation < RuntimeError
+    end
+
     # Action of playing back an audio file
     class Action
 
@@ -111,7 +117,7 @@ module AudioPlayback
       # @return [Boolean]
       def validate_requested_channels(channels)
         if channels.count > @output.num_channels
-          raise "Only #{@output.num_channels} channels available on #{@output.name} output"
+          raise InvalidChannels.new("Only #{@output.num_channels} channels available on #{@output.name} output")
           false
         end
         true
@@ -210,7 +216,7 @@ module AudioPlayback
         populate_channels(options)
         if truncate_requested?(options)
           if !truncate_valid?(options)
-            raise "Seek and end_position options are not valid"
+            raise InvalidTruncation.new("Seek and end_position options are not valid")
           else
             populate_truncation(options)
           end
