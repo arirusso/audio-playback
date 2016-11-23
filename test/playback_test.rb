@@ -12,18 +12,47 @@ class AudioPlayback::PlaybackTest < Minitest::Test
 
     context ".play" do
 
-      setup do
-        AudioPlayback::Device::Stream.any_instance.expects(:start).once.returns(true)
-      end
-
       teardown do
         AudioPlayback::Device::Stream.any_instance.unstub(:start)
       end
 
-      should "start playback" do
-        @playback = AudioPlayback::Playback.play(@sound, @output)
-        refute_nil @playback
-        assert_kind_of AudioPlayback::Playback::Action, @playback
+      context "without truncation" do
+
+        setup do
+          AudioPlayback::Device::Stream.any_instance.expects(:start).once.returns(true)
+          @playback = AudioPlayback::Playback.play(@sound, @output)
+        end
+
+        should "start playback" do
+          refute_nil @playback
+          assert_kind_of AudioPlayback::Playback::Action, @playback
+        end
+
+        should "not have truncation params" do
+          assert_nil @playback.truncate
+        end
+
+      end
+
+      context "with truncation" do
+
+        setup do
+          AudioPlayback::Device::Stream.any_instance.expects(:start).once.returns(true)
+          @playback = AudioPlayback::Playback.play(@sound, @output, :seek => 0.8, :duration => 2)
+        end
+
+        should "start playback" do
+          refute_nil @playback
+          assert_kind_of AudioPlayback::Playback::Action, @playback
+        end
+
+        should "have truncation params" do
+          refute_nil @playback.truncate
+          assert_kind_of Hash, @playback.truncate
+          refute_nil @playback.truncate[:seek]
+          refute_nil @playback.truncate[:duration]
+        end
+
       end
 
     end
@@ -77,6 +106,49 @@ class AudioPlayback::PlaybackTest < Minitest::Test
 
       should "do logging" do
         assert @playback.report(@logger)
+      end
+
+    end
+
+    context "#number_of_seconds_to_number_of_frames" do
+
+      setup do
+        @playback = AudioPlayback::Playback.new(@sound, @output)
+      end
+
+      should "convert seconds to frames" do
+        assert_equal 3 * 44100, @playback.send(:number_of_seconds_to_number_of_frames, 3)
+        assert_equal 10 * 44100, @playback.send(:number_of_seconds_to_number_of_frames, 10)
+        assert_equal 30 * 44100, @playback.send(:number_of_seconds_to_number_of_frames, 30)
+        assert_equal 5000 * 44100, @playback.send(:number_of_seconds_to_number_of_frames, 5000)
+      end
+
+    end
+
+    context "#truncate_requested?" do
+
+      context "with truncation" do
+
+        setup do
+          @playback = AudioPlayback::Playback.new(@sound, @output)
+        end
+
+        should "have truncation params" do
+          assert @playback.send(:truncate_requested?, :seek => 3, :duration => 2)
+        end
+
+      end
+
+      context "without truncation" do
+
+        setup do
+          @playback = AudioPlayback::Playback.new(@sound, @output)
+        end
+
+        should "have truncation params" do
+          refute @playback.send(:truncate_requested?, {})
+        end
+
       end
 
     end
