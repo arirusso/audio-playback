@@ -13,7 +13,7 @@ module AudioPlayback
 
     FRAME_SIZE = FFI::TYPE_FLOAT32.size
 
-    METADATA = [:size, :num_channels, :start_frame, :end_frame, :pointer, :is_eof].freeze
+    METADATA = [:size, :num_channels, :start_frame, :end_frame, :is_looping, :pointer, :is_eof].freeze
 
     class InvalidChannels < RuntimeError
     end
@@ -45,6 +45,7 @@ module AudioPlayback
       # @option options [Array<Fixnum>, Fixnum] :channels (or: :channel)
       # @option options [Numeric] :duration Play for given time in seconds
       # @option options [Numeric] :end_position Stop at given time position in seconds (will use :duration if both are included)
+      # @option options [Boolean] :is_looping Whether to loop audio
       # @option options [IO] :logger
       # @option options [Numeric] :seek Start at given time position in seconds
       # @option options [Stream] :stream
@@ -108,6 +109,12 @@ module AudioPlayback
       # @return [Boolean]
       def channels_requested?
         !@channels.nil?
+      end
+
+      # Is audio looping ?
+      # @return [Boolean]
+      def looping?
+        @is_looping
       end
 
       private
@@ -212,6 +219,10 @@ module AudioPlayback
       # Populate the playback action
       # @param [Hash] options
       # @option options [Fixnum, Array<Fixnum>] :channels (or: :channel)
+      # @option options [Numeric] :duration Play for given time in seconds
+      # @option options [Numeric] :end_position Stop at given time position in seconds (will use :duration if both are included)
+      # @option options [Boolean] :is_looping Whether to loop audio
+      # @option options [Numeric] :seek Start at given time position in seconds
       # @return [Playback::Action]
       def populate(options = {})
         populate_channels(options)
@@ -223,6 +234,7 @@ module AudioPlayback
             raise(InvalidTruncation.new(message))
           end
         end
+        @is_looping = !!options[:is_looping]
         @data = StreamData.new(self)
         self
       end

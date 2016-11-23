@@ -54,10 +54,10 @@ module AudioPlayback
       def block
         begin
           while active?
-            sleep(0.0001)
+            sleep(0.001)
           end
           while FFI::PortAudio::API.Pa_IsStreamActive(@stream.read_pointer) != :paNoError
-            sleep(1)
+            sleep(0.1)
           end
         rescue SystemExit, Interrupt
           # Control-C
@@ -74,7 +74,7 @@ module AudioPlayback
       # @param [Playback] playback
       # @return [Boolean]
       def open_stream(playback)
-        @userdata = playback.data.to_pointer
+        @userdata ||= playback.data.to_pointer
         FFI::PortAudio::API.Pa_OpenStream(@stream, @input, @output, @freq, @frames, @flags, @method, @userdata)
         true
       end
@@ -112,12 +112,20 @@ module AudioPlayback
       # @param [Playback] playback
       # @return [Boolean]
       def open_playback(playback)
-        @freq = playback.sample_rate.to_i
-        @frames = playback.buffer_size
-        @flags = FFI::PortAudio::API::NoFlag
-        @stream = FFI::Buffer.new(:pointer)
-        @method = method(:process)
+        populate_stream_playback(playback)
         open_stream(playback)
+        true
+      end
+
+      # Initialize the stream's playback properties
+      # @param [Playback] playback
+      # @return [Boolean]
+      def populate_stream_playback(playback)
+        @freq ||= playback.sample_rate.to_i
+        @frames ||= playback.buffer_size
+        @flags ||= FFI::PortAudio::API::NoFlag
+        @stream ||= FFI::Buffer.new(:pointer)
+        @method ||= method(:process)
         true
       end
 
@@ -143,6 +151,8 @@ module AudioPlayback
         #puts "Start point: #{start_frame}"
         end_frame = user_data.get_float32(Playback::METADATA.index(:end_frame) * Playback::FRAME_SIZE).to_i
         #puts "Duration: #{duration}"
+        is_looping = user_data.get_float32(Playback::METADATA.index(:is_looping) * Playback::FRAME_SIZE).to_i > 0
+        #puts "Is looping: #{is_looping}"
         end_frame = [end_frame, audio_data_size].min
         is_eof = false
         if counter >= end_frame - frames_per_buffer
@@ -169,9 +179,15 @@ module AudioPlayback
         counter += frames_per_buffer
         user_data.put_float32(Playback::METADATA.index(:pointer) * Playback::FRAME_SIZE, counter.to_f) # update counter
         if is_eof
-          #puts "Marking eof"
-          user_data.put_float32(Playback::METADATA.index(:is_eof) * Playback::FRAME_SIZE, 1.0) # mark eof
-          :paComplete
+          if is_looping
+            #puts "Looping to beginning"
+            user_data.put_float32(Playback::METADATA.index(:pointer) * Playback::FRAME_SIZE, start_frame)
+            :paContinue
+          else
+            #puts "Marking eof"
+            user_data.put_float32(Playback::METADATA.index(:is_eof) * Playback::FRAME_SIZE, 1.0) # mark eof
+            :paComplete
+          end
         else
           :paContinue
         end

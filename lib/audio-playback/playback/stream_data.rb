@@ -30,15 +30,20 @@ module AudioPlayback
           Playback::METADATA.index(:pointer),
           Playback::METADATA.index(:is_eof)
         ]
-        indexes.each { |index| @data[index] = 0.0 }
+        indexes.each do |index|
+          @data[index] = 0.0
+          @pointer.put_float32(index * Playback::FRAME_SIZE, 0)
+        end
         true
       end
 
       # A C pointer version of the audio data
       # @return [FFI::Pointer]
       def to_pointer
-        @pointer ||= FFI::LibC.malloc(@playback.data_size)
-        @pointer.write_array_of_float(@data.flatten)
+        if @pointer.nil?
+          @pointer = FFI::LibC.malloc(@playback.data_size)
+          @pointer.write_array_of_float(@data.flatten)
+        end
         @pointer
       end
 
@@ -56,8 +61,10 @@ module AudioPlayback
       # @return [FrameSet]
       def add_metadata
         size = @data.size
-        @data.unshift(0.0) # 5. is_eof
-        @data.unshift(0.0) # 4. counter
+        @data.unshift(0.0) # 6. is_eof
+        @data.unshift(0.0) # 5. counter
+        loop_value = @playback.looping? ? 1.0 : 0.0
+        @data.unshift(loop_value) # 4. is_looping
         if @playback.truncate?
           end_frame = @playback.truncate[:end_frame]
           start_frame = @playback.truncate[:start_frame]
