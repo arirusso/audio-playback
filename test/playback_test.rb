@@ -5,30 +5,21 @@ class AudioPlayback::PlaybackTest < Minitest::Test
   context "Playback" do
 
     setup do
-      @path = "test/media/1-mono-44100.wav"
+      @sample_rate = 44100
+      @path = "test/media/1-mono-#{@sample_rate}.wav"
       @sound = AudioPlayback::Sound.load(@path)
       @output = AudioPlayback::Device::Output.by_id(0)
     end
 
-    context ".play" do
+    context "#initialize" do
 
-      teardown do
-        AudioPlayback::Device::Stream.any_instance.unstub(:start)
-      end
-
-      context "without truncation" do
+      context "with no truncation" do
 
         setup do
-          AudioPlayback::Device::Stream.any_instance.expects(:start).once.returns(true)
-          @playback = AudioPlayback::Playback.play(@sound, @output)
+          @playback = AudioPlayback::Playback.new(@sound, @output)
         end
 
-        should "start playback" do
-          refute_nil @playback
-          assert_kind_of AudioPlayback::Playback::Action, @playback
-        end
-
-        should "not have truncation params" do
+        should "have no truncation params" do
           assert_nil @playback.truncate
         end
 
@@ -36,23 +27,216 @@ class AudioPlayback::PlaybackTest < Minitest::Test
 
       context "with truncation" do
 
-        setup do
-          AudioPlayback::Device::Stream.any_instance.expects(:start).once.returns(true)
-          @playback = AudioPlayback::Playback.play(@sound, @output, :seek => 0.8, :duration => 2)
+        context "with seek only" do
+
+          setup do
+            @seek = 0.1
+            @playback = AudioPlayback::Playback.new(@sound, @output, seek: @seek)
+          end
+
+          should "have truncation params" do
+            refute_nil @playback.truncate
+            assert_kind_of Hash, @playback.truncate
+          end
+
+          should "have correct seek value" do
+            refute_nil @playback.truncate[:seek]
+            assert_equal (@seek * @sample_rate).to_i, @playback.truncate[:seek]
+          end
+
+          should "have no duration value" do
+            assert_nil @playback.truncate[:duration]
+          end
+
         end
 
-        should "start playback" do
-          refute_nil @playback
-          assert_kind_of AudioPlayback::Playback::Action, @playback
+        context "with duration only" do
+
+          setup do
+            @duration = 0.2
+            @playback = AudioPlayback::Playback.new(@sound, @output, duration: @duration)
+          end
+
+          should "have truncation params" do
+            refute_nil @playback.truncate
+            assert_kind_of Hash, @playback.truncate
+          end
+
+          should "have no seek value" do
+            assert_nil @playback.truncate[:seek]
+          end
+
+          should "have correct duration value" do
+            refute_nil @playback.truncate[:duration]
+            assert_equal (@duration * @sample_rate).to_i, @playback.truncate[:duration]
+          end
+
         end
 
-        should "have truncation params" do
-          refute_nil @playback.truncate
-          assert_kind_of Hash, @playback.truncate
-          refute_nil @playback.truncate[:seek]
-          refute_nil @playback.truncate[:duration]
+        context "with end position only" do
+
+          setup do
+            @end_position = 0.3
+            @playback = AudioPlayback::Playback.new(@sound, @output, end_position: @end_position)
+          end
+
+          should "have truncation params" do
+            refute_nil @playback.truncate
+            assert_kind_of Hash, @playback.truncate
+          end
+
+          should "have no seek value" do
+            assert_nil @playback.truncate[:seek]
+          end
+
+          should "have correct duration value" do
+            refute_nil @playback.truncate[:duration]
+            assert_equal (@end_position * @sample_rate).to_i, @playback.truncate[:duration]
+          end
+
         end
 
+        context "with seek and duration" do
+
+          setup do
+            @seek = 0.4
+            @duration = 0.5
+            @playback = AudioPlayback::Playback.new(@sound, @output, seek: @seek, duration: @duration)
+          end
+
+          should "have truncation params" do
+            refute_nil @playback.truncate
+            assert_kind_of Hash, @playback.truncate
+          end
+
+          should "have correct seek value" do
+            refute_nil @playback.truncate[:seek]
+            assert_equal (@seek * @sample_rate).to_i, @playback.truncate[:seek]
+          end
+
+          should "have correct duration value" do
+            refute_nil @playback.truncate[:duration]
+            assert_equal (@duration * @sample_rate).to_i, @playback.truncate[:duration]
+          end
+
+        end
+
+        context "with seek and end position" do
+
+          context "valid" do
+
+            setup do
+              @seek = 0.4
+              @end_position = 0.5
+              @playback = AudioPlayback::Playback.new(@sound, @output, seek: @seek, end_position: @end_position)
+            end
+
+            should "have truncation params" do
+              refute_nil @playback.truncate
+              assert_kind_of Hash, @playback.truncate
+            end
+
+            should "have correct seek value" do
+              refute_nil @playback.truncate[:seek]
+              assert_equal (@seek * @sample_rate).to_i, @playback.truncate[:seek]
+            end
+
+            should "have correct duration value" do
+              refute_nil @playback.truncate[:duration]
+              assert_equal ((@end_position - @seek) * @sample_rate).to_i, @playback.truncate[:duration]
+            end
+
+          end
+
+          context "invalid" do
+
+            setup do
+              @seek = 0.7
+              @end_position = 0.6
+            end
+
+            should "raise exception" do
+              assert_raises AudioPlayback::Playback::InvalidTruncation do
+                @playback = AudioPlayback::Playback.new(@sound, @output, seek: @seek, end_position: @end_position)
+              end
+            end
+
+          end
+
+        end
+
+        context "with duration and end position" do
+
+          setup do
+            @duration = 0.8
+            @end_position = 0.9
+            @playback = AudioPlayback::Playback.new(@sound, @output, duration: @duration, end_position: @end_position)
+          end
+
+          should "have truncation params" do
+            refute_nil @playback.truncate
+            assert_kind_of Hash, @playback.truncate
+          end
+
+          should "have no seek value" do
+            assert_nil @playback.truncate[:seek]
+          end
+
+          should "ignore end_position, use duration" do
+            refute_nil @playback.truncate[:duration]
+            assert_equal (@duration * @sample_rate).to_i, @playback.truncate[:duration]
+          end
+
+        end
+
+        context "with seek, duration and end position" do
+
+          setup do
+            @duration = 1.0
+            @seek = 1.1
+            @end_position = 1.2
+            @playback = AudioPlayback::Playback.new(@sound, @output, seek: @seek, duration: @duration, end_position: @end_position)
+          end
+
+          should "have truncation params" do
+            refute_nil @playback.truncate
+            assert_kind_of Hash, @playback.truncate
+          end
+
+          should "have correct seek value" do
+            refute_nil @playback.truncate[:seek]
+            assert_equal (@seek * @sample_rate).to_i, @playback.truncate[:seek]
+          end
+
+          should "ignore end_position, use duration" do
+            refute_nil @playback.truncate[:duration]
+            assert_equal (@duration * @sample_rate).to_i, @playback.truncate[:duration]
+          end
+
+        end
+
+      end
+
+    end
+    
+    context ".play" do
+
+      setup do
+        AudioPlayback::Device::Stream.any_instance.expects(:start).once.returns(true)
+        @playback = AudioPlayback::Playback.play(@sound, @output)
+      end
+
+      teardown do
+        AudioPlayback::Device::Stream.any_instance.unstub(:start)
+      end
+
+      should "start playback" do
+        refute_nil @playback
+        assert_kind_of AudioPlayback::Playback::Action, @playback
+      end
+
+      should "not have truncation params" do
+        assert_nil @playback.truncate
       end
 
     end
@@ -134,7 +318,7 @@ class AudioPlayback::PlaybackTest < Minitest::Test
         end
 
         should "have truncation params" do
-          assert @playback.send(:truncate_requested?, :seek => 3, :duration => 2)
+          assert @playback.send(:truncate_requested?, seek: 3, duration: 2)
         end
 
       end
