@@ -56,8 +56,14 @@ module AudioPlayback
       # @return [FrameSet]
       def add_metadata
         size = @data.size
-        @data.unshift(0.0) # 3. is_eof
-        @data.unshift(0.0) # 2. counter
+        @data.unshift(0.0) # 5. is_eof
+        @data.unshift(0.0) # 4. counter
+        if @playback.truncate?
+          end_frame = @playback.truncate[:end_frame]
+          start_frame = @playback.truncate[:start_frame]
+        end
+        @data.unshift(end_frame || size) # 3. end frame
+        @data.unshift(start_frame || 0.0) # 2. start frame
         @data.unshift(@playback.output.num_channels.to_f) # 1. num_channels
         @data.unshift(size.to_f) # 0. frame set size (without metadata)
         @data

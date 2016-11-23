@@ -13,7 +13,7 @@ module AudioPlayback
 
     FRAME_SIZE = FFI::TYPE_FLOAT32.size
 
-    METADATA = [:size, :num_channels, :pointer, :is_eof].freeze
+    METADATA = [:size, :num_channels, :start_frame, :end_frame, :pointer, :is_eof].freeze
 
     class InvalidChannels < RuntimeError
     end
@@ -172,10 +172,10 @@ module AudioPlayback
           end
         end
         unless seek.nil?
-          @truncate[:seek] = number_of_seconds_to_number_of_frames(seek)
+          @truncate[:start_frame] = number_of_seconds_to_number_of_frames(seek)
         end
         unless duration.nil?
-          @truncate[:duration] = number_of_seconds_to_number_of_frames(duration)
+          @truncate[:end_frame] = number_of_seconds_to_number_of_frames(duration)
         end
         @truncate
       end
