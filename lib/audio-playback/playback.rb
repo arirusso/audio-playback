@@ -180,6 +180,13 @@ module AudioPlayback
         (num_seconds * sample_rate).to_i
       end
 
+      # Are the options for truncation valid? eg is the :end_position option after the
+      # :seek option?
+      # @param [Hash] options
+      # @option options [Numeric] :duration Play for given time in seconds
+      # @option options [Numeric] :end_position Stop at given time position in seconds (will use :duration if both are included)
+      # @option options [Numeric] :seek Start at given time position in seconds
+      # @return [Boolean]
       def truncate_valid?(options)
         options[:end_position].nil? || options[:seek].nil? ||
           options[:end_position] > options[:seek]
