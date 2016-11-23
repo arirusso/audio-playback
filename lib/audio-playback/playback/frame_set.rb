@@ -35,7 +35,7 @@ module AudioPlayback
       # @return [Array<Frame>]
       def truncate(data, playback)
         unless playback.truncate[:seek].nil?
-          data = data.slice(playback.truncate[:seek], data.length)
+          data = data.slice(playback.truncate[:seek]..-1)
         end
         unless playback.truncate[:duration].nil?
           data = data.slice(0, playback.truncate[:duration])
