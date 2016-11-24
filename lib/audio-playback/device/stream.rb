@@ -180,12 +180,11 @@ module AudioPlayback
         #puts "This buffer size: #{data.size}"
         #puts "Writing to output"
         output.write_array_of_float(data)
-        counter += frames_per_buffer
-        user_data.put_float32(Playback::METADATA.index(:pointer) * Playback::FRAME_SIZE, counter.to_f) # update counter
+        next_counter = counter + frames_per_buffer
         if is_eof
           if is_looping
             #puts "Looping to beginning"
-            user_data.put_float32(Playback::METADATA.index(:pointer) * Playback::FRAME_SIZE, start_frame)
+            next_counter = start_frame
             :paContinue
           else
             #puts "Marking eof"
@@ -195,6 +194,7 @@ module AudioPlayback
         else
           :paContinue
         end
+        user_data.put_float32(Playback::METADATA.index(:pointer) * Playback::FRAME_SIZE, next_counter.to_f) # update counter
         #puts "Exiting callback at #{Time.now.to_f}"
         result
       end
