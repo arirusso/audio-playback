@@ -54,7 +54,6 @@ module AudioPlayback
       def block
         begin
           while active?
-            p Time.now.to_f
             sleep(0.1)
           end
           while FFI::PortAudio::API.Pa_IsStreamActive(@stream.read_pointer) != :paNoError
