@@ -143,7 +143,6 @@ module AudioPlayback
         #puts "Start point: #{start_frame}"
         end_frame = user_data.get_float32(Playback::METADATA.index(:end_frame) * Playback::FRAME_SIZE).to_i
         #puts "Duration: #{duration}"
-        counter += start_frame
         end_frame = [end_frame, audio_data_size].min
         is_eof = false
         end_window = end_frame - frames_per_buffer
@@ -158,7 +157,7 @@ module AudioPlayback
             extra_data = [0] * difference * num_channels
             is_eof = true
           else
-            p "Aborting (counter: #{counter}, end_frame: #{end_frame})"
+            # p "Aborting (counter: #{counter}, end_frame: #{end_frame})"
             return :paAbort
           end
         end
