@@ -39,7 +39,7 @@ class AudioPlayback::PlaybackTest < Minitest::Test
             assert_kind_of Hash, @playback.truncate
           end
 
-          should "have correct seek value" do
+          should "have correct start frame value" do
             refute_nil @playback.truncate[:start_frame]
             assert_equal (@seek * @sample_rate).to_i, @playback.truncate[:start_frame]
           end
@@ -62,11 +62,11 @@ class AudioPlayback::PlaybackTest < Minitest::Test
             assert_kind_of Hash, @playback.truncate
           end
 
-          should "have no seek value" do
+          should "have no start frame value" do
             assert_nil @playback.truncate[:start_frame]
           end
 
-          should "have correct duration value" do
+          should "have correct end frame value" do
             refute_nil @playback.truncate[:end_frame]
             assert_equal (@duration * @sample_rate).to_i, @playback.truncate[:end_frame]
           end
@@ -85,11 +85,11 @@ class AudioPlayback::PlaybackTest < Minitest::Test
             assert_kind_of Hash, @playback.truncate
           end
 
-          should "have no seek value" do
+          should "have no start frame value" do
             assert_nil @playback.truncate[:start_frame]
           end
 
-          should "have correct duration value" do
+          should "have correct end frame value" do
             refute_nil @playback.truncate[:end_frame]
             assert_equal (@end_position * @sample_rate).to_i, @playback.truncate[:end_frame]
           end
@@ -109,14 +109,14 @@ class AudioPlayback::PlaybackTest < Minitest::Test
             assert_kind_of Hash, @playback.truncate
           end
 
-          should "have correct seek value" do
+          should "have correct start frame value" do
             refute_nil @playback.truncate[:start_frame]
             assert_equal (@seek * @sample_rate).to_i, @playback.truncate[:start_frame]
           end
 
-          should "have correct duration value" do
+          should "have correct end frame value" do
             refute_nil @playback.truncate[:end_frame]
-            assert_equal (@duration * @sample_rate).to_i, @playback.truncate[:end_frame]
+            assert_equal ((@duration + @seek) * @sample_rate).to_i, @playback.truncate[:end_frame]
           end
 
         end
@@ -136,14 +136,14 @@ class AudioPlayback::PlaybackTest < Minitest::Test
               assert_kind_of Hash, @playback.truncate
             end
 
-            should "have correct seek value" do
+            should "have correct start frame value" do
               refute_nil @playback.truncate[:start_frame]
               assert_equal (@seek * @sample_rate).to_i, @playback.truncate[:start_frame]
             end
 
-            should "have correct duration value" do
+            should "have correct end frame value" do
               refute_nil @playback.truncate[:end_frame]
-              assert_equal ((@end_position - @seek) * @sample_rate).to_i, @playback.truncate[:end_frame]
+              assert_equal (@end_position * @sample_rate).to_i, @playback.truncate[:end_frame]
             end
 
           end
@@ -178,7 +178,7 @@ class AudioPlayback::PlaybackTest < Minitest::Test
             assert_kind_of Hash, @playback.truncate
           end
 
-          should "have no seek value" do
+          should "have no start frame value" do
             assert_nil @playback.truncate[:start_frame]
           end
 
@@ -203,14 +203,14 @@ class AudioPlayback::PlaybackTest < Minitest::Test
             assert_kind_of Hash, @playback.truncate
           end
 
-          should "have correct seek value" do
+          should "have correct start frame value" do
             refute_nil @playback.truncate[:start_frame]
             assert_equal (@seek * @sample_rate).to_i, @playback.truncate[:start_frame]
           end
 
           should "ignore end_position, use duration" do
             refute_nil @playback.truncate[:end_frame]
-            assert_equal (@duration * @sample_rate).to_i, @playback.truncate[:end_frame]
+            assert_equal ((@duration + @seek) * @sample_rate).to_i, @playback.truncate[:end_frame]
           end
 
         end
