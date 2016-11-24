@@ -169,20 +169,19 @@ module AudioPlayback
       # @return [Hash]
       def populate_truncation(options = {})
         @truncate = {}
-        duration = options[:duration]
-        if options[:seek].nil?
-          duration ||= options[:end_position]
+        seek = options[:seek]
+        end_position = if options[:duration].nil?
+          options[:end_position]
+        elsif seek.nil?
+          options[:duration] || options[:end_position]
         else
-          seek = options[:seek]
-          unless options[:end_position].nil?
-            duration ||= options[:end_position] - options[:seek]
-          end
+          options[:duration] + seek || options[:end_position]
         end
         unless seek.nil?
           @truncate[:start_frame] = number_of_seconds_to_number_of_frames(seek)
         end
-        unless duration.nil?
-          @truncate[:end_frame] = number_of_seconds_to_number_of_frames(duration)
+        unless end_position.nil?
+          @truncate[:end_frame] = number_of_seconds_to_number_of_frames(end_position)
         end
         @truncate
       end
