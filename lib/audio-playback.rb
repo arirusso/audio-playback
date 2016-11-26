@@ -31,8 +31,11 @@ module AudioPlayback
   # @param [Hash] options
   # @option options [Fixnum] :buffer_size Buffer size in bytes.  Defaults to 4096
   # @option options [Array<Fixnum>, Fixnum] :channels (or: :channel) Output audio to the given channel(s).  Eg `:channels => [0,1]` will direct the audio to channels 0 and 1. Defaults to use all available channels
+  # @option options [Numeric] :duration Play for given time in seconds
+  # @option options [Numeric] :end_position Stop at given time position in seconds (will use :duration if both are included)
   # @option options [Float] :latency Latency in seconds.  Defaults to use the default latency for the selected output device
   # @option options [IO] :logger Logger object
+  # @option options [Numeric] :seek Start at given time position in seconds
   # @option options [Fixnum, String] :output_device (or: :output) Output device id or name
   def self.play(file_paths, options = {})
     sounds = Array(file_paths).map { |path| Sound.load(path, options) }
