@@ -153,17 +153,13 @@ module AudioPlayback
         end
       end
 
-      # Populate the truncation parameters. Converts the seconds based arguments to number
-      # of frames
-      # @param [Hash] options
-      # @option options [Numeric] :duration Play for given time in seconds
-      # @option options [Numeric] :end_position Stop at given time position in seconds (will use :duration if both are included)
-      # @option options [Numeric] :seek Start at given time position in seconds
+      # Populate the truncation parameters. Converts the seconds based Position arguments
+      # to number of frames
+      # @param [Position, nil] seek Start at given time position in seconds
+      # @param [Position, nil] duration Play for given time in seconds
+      # @param [Position, nil] end_position Stop at given time position in seconds (will use duration arg if both are included)
       # @return [Hash]
-      def populate_truncation(options = {})
-        seek = Position.new(options[:seek]) unless options[:seek].nil?
-        duration = Position.new(options[:duration]) unless options[:duration].nil?
-        end_position = Position.new(options[:end_position]) unless options[:end_position].nil?
+      def populate_truncation(seek, duration, end_position)
         @truncate = {}
         end_position = if duration.nil?
           end_position
@@ -210,6 +206,19 @@ module AudioPlayback
         !options[:seek].nil? || !options[:duration].nil? || !options[:end_position].nil?
       end
 
+      # Populate Position objects using the the truncation parameters.
+      # @param [Hash] options
+      # @option options [Numeric] :duration Play for given time in seconds
+      # @option options [Numeric] :end_position Stop at given time position in seconds (will use :duration if both are included)
+      # @option options [Numeric] :seek Start at given time position in seconds
+      # @return [Array<Position>]
+      def truncate_options_as_positions(options = {})
+        seek = Position.new(options[:seek]) unless options[:seek].nil?
+        duration = Position.new(options[:duration]) unless options[:duration].nil?
+        end_position = Position.new(options[:end_position]) unless options[:end_position].nil?
+        [seek, duration, end_position]
+      end
+
       # Populate the playback action
       # @param [Hash] options
       # @option options [Fixnum, Array<Fixnum>] :channels (or: :channel)
@@ -218,7 +227,8 @@ module AudioPlayback
         populate_channels(options)
         if truncate_requested?(options)
           if truncate_valid?(options)
-            populate_truncation(options)
+            seek, duration, end_position = *truncate_options_as_positions(options)
+            populate_truncation(seek, duration, end_position)
           else
             message = "Truncation options are not valid"
             raise(InvalidTruncation.new(message))
