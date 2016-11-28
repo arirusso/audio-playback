@@ -5,6 +5,8 @@ module AudioPlayback
     class InvalidTime < RuntimeError
     end
 
+    extend Forwardable
+
     UNITS = [
       1, # second
       60, # minute
@@ -15,10 +17,20 @@ module AudioPlayback
 
     attr_reader :seconds
     alias_method :to_seconds, :seconds
+    def_delegators :@seconds, :to_f
 
     def initialize(seconds_or_time)
+      seconds_or_time = seconds_or_time.to_s
       validate_time(seconds_or_time)
       populate(seconds_or_time)
+    end
+
+    def *(another)
+      @seconds * another.to_f
+    end
+
+    def +(another)
+      @seconds + another.to_f
     end
 
     private
