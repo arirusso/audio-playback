@@ -14,10 +14,16 @@ $LOAD_PATH.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 #
 # * `-c` Output audio to the given channel(s).  Eg `-c 0,1` will direct audio to channels 0 and 1.  Defaults to use channels 0 and 1 on the selected device
 #
+# * `-d` Duration. Will stop after the given amount of time.  Eg `-d 56` stops after 56 seconds of playback
+#
+# * `-e` End position. Will stop at the given absolute time, irregardless of seek. Eg `-e 56` stops at 56 seconds. `-s 01:09:30 -e 01:10:00` stops at 1 hour 10 minutes after 30 seconds of playback
+#
 # * `-o` Output device id or name.  Defaults to the system default
 #
+# * `-s` Seek  to given time position. Eg `-s 56` seeks to 56 seconds and `-s 01:10:00` seeks to 1 hour 10 min.
+#
 # * `-v` or `--verbose` Verbose
-# 
+#
 # * `--list-devices` List the available audio output devices
 #
 #
