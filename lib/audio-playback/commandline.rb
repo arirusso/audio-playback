@@ -18,6 +18,20 @@ module AudioPlayback
         :name => "Direct to channel(s)"
       },
 
+      :duration => {
+        :short => "-d",
+        :long => "--duration [seconds]",
+        :name => "Duration",
+        :type => String
+      },
+
+      :end_position => {
+        :short => "-e",
+        :long => "--end-position [seconds]",
+        :name => "End position",
+        :type => String
+      },
+
       :latency => {
         :short => "-l",
         :long => "--latency [seconds]",
@@ -28,6 +42,13 @@ module AudioPlayback
       :list_devices => {
         :long => "--list-devices",
         :name => "List devices"
+      },
+
+      :seek => {
+        :short => "-s",
+        :long => "--seek [seconds]",
+        :name => "Seek",
+        :type => String
       },
 
       :logger => {
@@ -43,7 +64,7 @@ module AudioPlayback
         :type => String,
         :name => "Output device for playback"
       }
-    }
+    }.freeze
 
   end
 
