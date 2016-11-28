@@ -19,6 +19,7 @@ require "audio-playback/playback"
 
 # classes
 require "audio-playback/file"
+require "audio-playback/position"
 require "audio-playback/sound"
 
 # Play audio files
