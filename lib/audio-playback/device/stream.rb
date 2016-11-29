@@ -54,7 +54,7 @@ module AudioPlayback
       def block
         begin
           while active?
-            sleep(0.0001)
+            sleep(0.001)
           end
           while FFI::PortAudio::API.Pa_IsStreamActive(@stream.read_pointer) != :paNoError
             sleep(1)
@@ -135,26 +135,35 @@ module AudioPlayback
         #puts "Entering callback at #{Time.now.to_f}"
         counter = user_data.get_float32(Playback::METADATA.index(:pointer) * Playback::FRAME_SIZE).to_i
         #puts "Frame: #{counter}"
-        sample_size = user_data.get_float32(Playback::METADATA.index(:size) * Playback::FRAME_SIZE).to_i
-        #puts "Sample size: #{sample_size}"
+        audio_data_size = user_data.get_float32(Playback::METADATA.index(:size) * Playback::FRAME_SIZE).to_i
+        #puts "Sample size: #{audio_data_size}"
         num_channels = user_data.get_float32(Playback::METADATA.index(:num_channels) * Playback::FRAME_SIZE).to_i
         #puts "Num Channels: #{num_channels}"
+        start_frame = user_data.get_float32(Playback::METADATA.index(:start_frame) * Playback::FRAME_SIZE).to_i
+        #puts "Start point: #{start_frame}"
+        end_frame = user_data.get_float32(Playback::METADATA.index(:end_frame) * Playback::FRAME_SIZE).to_i
+        #puts "Duration: #{duration}"
+        end_frame = [end_frame, audio_data_size].min
         is_eof = false
-        if counter >= sample_size - frames_per_buffer
-          if counter < sample_size
-            buffer_size = sample_size.divmod(frames_per_buffer).last
+        end_window = end_frame - frames_per_buffer
+        if counter >= end_window
+          if counter == end_frame
+            is_eof = true
+          elsif counter < end_frame
+            buffer_size = end_frame.divmod(frames_per_buffer).last
             #puts "Truncated buffer size: #{buffer_size}"
             difference = frames_per_buffer - buffer_size
             #puts "Adding #{difference} frames of null audio"
             extra_data = [0] * difference * num_channels
             is_eof = true
           else
+            # p "Aborting (counter: #{counter}, end_frame: #{end_frame})"
             return :paAbort
           end
         end
         buffer_size ||= frames_per_buffer
         #puts "Size per buffer per channel: #{frames_per_buffer}"
-        offset = ((counter * num_channels) + Playback::METADATA.count) * Playback::FRAME_SIZE
+        offset = (((counter + start_frame) * num_channels) + Playback::METADATA.count) * Playback::FRAME_SIZE
         #puts "Starting at location: #{offset}"
         data = user_data.get_array_of_float32(offset, buffer_size * num_channels)
         data += extra_data unless extra_data.nil?

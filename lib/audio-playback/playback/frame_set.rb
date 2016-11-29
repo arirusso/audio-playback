@@ -7,7 +7,7 @@ module AudioPlayback
 
       extend Forwardable
 
-      def_delegators :@data, :[], :[]=, :flatten, :slice, :to_ary, :unshift
+      def_delegators :@data, :[], :[]=, :flatten, :length, :size, :slice, :to_ary, :unshift
 
       # @param [Playback::Action] playback
       def initialize(playback)
