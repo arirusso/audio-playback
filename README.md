@@ -45,6 +45,8 @@ Or if you're using Bundler, add this to your Gemfile
 
 * `-v` or `--verbose` Verbose
 
+* `--loop` Loop playback continuously
+
 * `--list-devices` List the available audio output devices
 
 

@@ -44,6 +44,11 @@ module AudioPlayback
         :name => "List devices"
       },
 
+      :loop => {
+        :long => "--loop",
+        :name => "Loop"
+      },
+
       :seek => {
         :short => "-s",
         :long => "--seek [seconds]",
