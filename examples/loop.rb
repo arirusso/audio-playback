@@ -19,9 +19,7 @@ audio_files.reject! { |file| file.match(/^\.{1,2}$/) }
 
 # Play files
 sound = AudioPlayback::Sound.load("#{MEDIA_DIRECTORY}/#{@file}")
-@playback = AudioPlayback::Playback.new(sound, @output)
+@playback = AudioPlayback::Playback.new(sound, @output, is_looping: true)
 
-loop do
-  @playback.start
-  @playback.block
-end
+@playback.start
+@playback.block
