@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 $:.unshift(File.join("..", "lib"))
 
-# Loop an audio file
+# Loop a snippet of an audio file
 
 require "audio-playback"
 
@@ -19,7 +19,7 @@ audio_files.reject! { |file| file.match(/^\.{1,2}$/) }
 
 # Play files
 sound = AudioPlayback::Sound.load("#{MEDIA_DIRECTORY}/#{@file}")
-@playback = AudioPlayback::Playback.new(sound, @output, is_looping: true)
+@playback = AudioPlayback::Playback.new(sound, @output, is_looping: true, seek: 0.1, duration: 0.2)
 
 @playback.start
 @playback.block
