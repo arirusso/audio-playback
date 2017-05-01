@@ -83,9 +83,9 @@ module AudioPlayback
       # Ensure that the channel structure of the frameset is according to the given number of channels
       #    and to the given particular channels when provided
       # @param [Array<Frame>] data
-      # @param [Fixnum] num_channels
+      # @param [Integer] num_channels
       # @param [Hash] options
-      # @option options [Array<Fixnum>] :channels
+      # @option options [Array<Integer>] :channels
       # @return [Array<Frame>]
       def ensure_num_channels(data, num_channels, options = {})
         data.each do |frame|

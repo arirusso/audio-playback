@@ -47,7 +47,7 @@ class AudioPlayback::Device::OutputTest < Minitest::Test
 
       should "populate id" do
         refute_nil @output.id
-        assert_kind_of Fixnum, @output.id
+        assert_kind_of Integer, @output.id
       end
 
       should "populate latency" do
@@ -57,7 +57,7 @@ class AudioPlayback::Device::OutputTest < Minitest::Test
 
       should "populate number of channels" do
         refute_nil @output.num_channels
-        assert_kind_of Fixnum, @output.num_channels
+        assert_kind_of Integer, @output.num_channels
       end
 
       should "populate name" do
@@ -115,7 +115,7 @@ class AudioPlayback::Device::OutputTest < Minitest::Test
 
       should "return correct num_channels" do
         refute_nil @output.num_channels
-        assert_kind_of Fixnum, @output.num_channels
+        assert_kind_of Integer, @output.num_channels
         assert_equal @test_info[:maxOutputChannels], @output.num_channels
       end
 
@@ -130,7 +130,7 @@ class AudioPlayback::Device::OutputTest < Minitest::Test
 
       should "return correct id" do
         refute_nil @output.id
-        assert_kind_of Fixnum, @output.id
+        assert_kind_of Integer, @output.id
         assert_equal @test_id, @output.id
       end
 

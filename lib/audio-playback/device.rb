@@ -21,7 +21,7 @@ module AudioPlayback
     end
 
     # Get a device by its ID
-    # @param [Fixnum] id
+    # @param [Integer] id
     # @return [Output]
     def by_id(id)
       outputs.find { |device| [device, device.id].include?(id) }
@@ -41,7 +41,7 @@ module AudioPlayback
     end
 
     # Get system device info given a device ID
-    # @param [Fixnum] id
+    # @param [Integer] id
     # @return [FFI::PortAudio::API::PaDeviceInfo]
     def device_info(id)
       FFI::PortAudio::API.Pa_GetDeviceInfo(id)
@@ -50,7 +50,7 @@ module AudioPlayback
     private
 
     # Is the device with the given ID an output?
-    # @param [Fixnum] id
+    # @param [Integer] id
     # @return [Boolean]
     def output?(id)
       device_info(id)[:maxOutputChannels] > 0

@@ -42,7 +42,7 @@ module AudioPlayback
       end
 
       # Select an output device by ID
-      # @param [Fixnum] id
+      # @param [Integer] id
       # @return [Output]
       def self.by_id(id)
         Device.by_id(id)
@@ -55,7 +55,7 @@ module AudioPlayback
         Device.by_name(name)
       end
 
-      # @param [Fixnum] id
+      # @param [Integer] id
       # @param [Hash] options
       # @option options [Float] :latency Device latency in seconds
       def initialize(id, options = {})
@@ -71,13 +71,13 @@ module AudioPlayback
       end
 
       # Number of channels the device supports
-      # @return [Fixnum]
+      # @return [Integer]
       def num_channels
         @resource[:channelCount]
       end
 
       # ID of the device
-      # @return [Fixnum]
+      # @return [Integer]
       def id
         @resource[:device]
       end
@@ -91,7 +91,7 @@ module AudioPlayback
       end
 
       # Populate the output
-      # @param [Fixnum] id
+      # @param [Integer] id
       # @param [Hash] options
       # @option options [Float] :latency
       # @return [FFI::PortAudio::API::PaStreamParameters]

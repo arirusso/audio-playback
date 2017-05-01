@@ -41,8 +41,8 @@ module AudioPlayback
       # @param [Array<Sound>, Sound] sounds
       # @param [Output] output
       # @param [Hash] options
-      # @option options [Fixnum] :buffer_size
-      # @option options [Array<Fixnum>, Fixnum] :channels (or: :channel)
+      # @option options [Integer] :buffer_size
+      # @option options [Array<Integer>, Integer] :channels (or: :channel)
       # @option options [Numeric] :duration Play for given time in seconds
       # @option options [Numeric] :end_position Stop at given time position in seconds (will use :duration if both are included)
       # @option options [IO] :logger
@@ -58,7 +58,7 @@ module AudioPlayback
       end
 
       # Sample rate of the playback sound
-      # @return [Fixnum]
+      # @return [Integer]
       def sample_rate
         @sounds.last.sample_rate
       end
@@ -98,7 +98,7 @@ module AudioPlayback
       end
 
       # Total size of the playback's sound frames in bytes
-      # @return [Fixnum]
+      # @return [Integer]
       def data_size
         frames = size * @num_channels
         frames * FRAME_SIZE.size
@@ -113,7 +113,7 @@ module AudioPlayback
       private
 
       # Are the requested channels available in the current environment?
-      # @param [Array<Fixnum>] channels
+      # @param [Array<Integer>] channels
       # @return [Boolean]
       def validate_requested_channels(channels)
         if channels.count > @output.num_channels
@@ -125,7 +125,7 @@ module AudioPlayback
       end
 
       # Validate and populate the variables containing information about the requested channels
-      # @param [Fixnum, Array<Fixnum>] request Channel(s)
+      # @param [Integer, Array<Integer>] request Channel(s)
       # @return [Boolean]
       def populate_requested_channels(request)
         request = Array(request)
@@ -141,7 +141,7 @@ module AudioPlayback
 
       # Populate the playback channels
       # @param [Hash] options
-      # @option options [Fixnum, Array<Fixnum>] :channels (or: :channel)
+      # @option options [Integer, Array<Integer>] :channels (or: :channel)
       # @return [Boolean]
       def populate_channels(options = {})
         request = options[:channels] || options[:channel]
@@ -179,7 +179,7 @@ module AudioPlayback
 
       # Convert number of seconds to number of sample frames given the sample rate
       # @param [Numeric] num_seconds
-      # @return [Fixnum]
+      # @return [Integer]
       def number_of_seconds_to_number_of_frames(num_seconds)
         (num_seconds * sample_rate).to_i
       end
@@ -221,7 +221,7 @@ module AudioPlayback
 
       # Populate the playback action
       # @param [Hash] options
-      # @option options [Fixnum, Array<Fixnum>] :channels (or: :channel)
+      # @option options [Integer, Array<Integer>] :channels (or: :channel)
       # @return [Playback::Action]
       def populate(options = {})
         populate_channels(options)
@@ -249,8 +249,8 @@ module AudioPlayback
     # @param [Sound] sound
     # @param [Output] output
     # @param [Hash] options
-    # @option options [Fixnum] :buffer_size
-    # @option options [Array<Fixnum>, Fixnum] :channels (or: :channel)
+    # @option options [Integer] :buffer_size
+    # @option options [Array<Integer>, Integer] :channels (or: :channel)
     # @option options [IO] :logger
     # @option options [Stream] :stream
     # @return [Playback]
