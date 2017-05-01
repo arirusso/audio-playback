@@ -26,6 +26,7 @@ $LOAD_PATH.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 #
 # * `--list-devices` List the available audio output devices
 #
+# * `--loop` Loop playback continuously
 #
 
 require "audio-playback"

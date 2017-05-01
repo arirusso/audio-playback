@@ -34,6 +34,7 @@ module AudioPlayback
   # @option options [Array<Integer>, Integer] :channels (or: :channel) Output audio to the given channel(s).  Eg `:channels => [0,1]` will direct the audio to channels 0 and 1. Defaults to use all available channels
   # @option options [Numeric] :duration Play for given time in seconds
   # @option options [Numeric] :end_position Stop at given time position in seconds (will use :duration if both are included)
+  # @option options [Boolean] :is_looping (or :loop) Whether to loop audio
   # @option options [Float] :latency Latency in seconds.  Defaults to use the default latency for the selected output device
   # @option options [IO] :logger Logger object
   # @option options [Numeric] :seek Start at given time position in seconds
@@ -42,6 +43,7 @@ module AudioPlayback
     sounds = Array(file_paths).map { |path| Sound.load(path, options) }
     requested_device = options[:output_device] || options[:output]
     output = Device::Output.by_name(requested_device) || Device::Output.by_id(requested_device) || Device.default_output
+    options[:is_looping] ||= options[:loop]
     Playback.play(sounds, output, options)
   end
 
