@@ -50,6 +50,8 @@ module AudioPlayback
       # @option options [Numeric] :seek Start at given time position in seconds
       # @option options [Stream] :stream
       def initialize(sounds, output, options = {})
+        @channels = nil
+        @truncate = nil
         @sounds = Array(sounds)
         @buffer_size = options[:buffer_size] || DEFAULT[:buffer_size]
         @output = output

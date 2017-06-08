@@ -22,6 +22,7 @@ module AudioPlayback
         @gain = 1.0
         @input = nil
         @output = output.resource
+        @stream = nil
         initialize_exit_callback(:logger => options[:logger])
         Stream.streams << self
       end

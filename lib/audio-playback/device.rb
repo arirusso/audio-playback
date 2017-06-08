@@ -12,7 +12,7 @@ module AudioPlayback
     # @return [Array<Output>]
     def outputs
       AudioPlayback.ensure_initialized
-      if @devices.nil?
+      if !defined?(@devices) || @devices.nil?
         count = FFI::PortAudio::API.Pa_GetDeviceCount
         ids = (0..count-1).to_a.select { |id| output?(id) }
         @devices = ids.map { |id| Output.new(id) }

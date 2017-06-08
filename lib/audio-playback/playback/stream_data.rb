@@ -21,6 +21,7 @@ module AudioPlayback
       # @param [Playback::Action] playback
       def initialize(playback)
         @playback = playback
+        @pointer = nil
         populate
       end
 
