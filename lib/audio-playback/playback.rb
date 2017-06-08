@@ -90,11 +90,11 @@ module AudioPlayback
       # @return [Boolean]
       def report(logger)
         paths = @sounds.map(&:audio_file).map(&:path)
-        logger.puts("Playback report for #{paths}")
-        logger.puts("  Number of channels: #{@num_channels}")
-        logger.puts("  Direct audio to channels #{@channels.to_s}") unless @channels.nil?
-        logger.puts("  Buffer size: #{@buffer_size}")
-        logger.puts("  Latency: #{@output.latency}")
+        logger.send(:puts, "Playback report for #{paths}")
+        logger.send(:puts, "  Number of channels: #{@num_channels}")
+        logger.send(:puts, "  Direct audio to channels #{@channels.to_s}") unless @channels.nil?
+        logger.send(:puts, "  Buffer size: #{@buffer_size}")
+        logger.send(:puts, "  Latency: #{@output.latency}")
         true
       end
 

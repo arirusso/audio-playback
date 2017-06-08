@@ -30,10 +30,10 @@ module AudioPlayback
     # @param [IO] logger
     # @return [Boolean]
     def report(logger)
-      logger.puts("Sound report for #{@audio_file.path}")
-      logger.puts("  Sample rate: #{@audio_file.sample_rate}")
-      logger.puts("  Channels: #{@audio_file.num_channels}")
-      logger.puts("  File size: #{@audio_file.size}")
+      logger.send(:puts, "Sound report for #{@audio_file.path}")
+      logger.send(:puts, "  Sample rate: #{@audio_file.sample_rate}")
+      logger.send(:puts, "  Channels: #{@audio_file.num_channels}")
+      logger.send(:puts, "  File size: #{@audio_file.size}")
       true
     end
 

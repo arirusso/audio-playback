@@ -99,7 +99,7 @@ module AudioPlayback
       # @return [Boolean]
       def exit_callback(options = {})
         logger = options[:logger]
-        logger.puts("Exit") if logger
+        logger.send(:puts, "Exit") if logger
         unless @stream.nil?
           #close
           FFI::PortAudio::API.Pa_Terminate

@@ -19,7 +19,7 @@ module AudioPlayback
     # @return [Array<Array<Float>>, Array<Float>] File data
     def read(options = {})
       if logger = options[:logger]
-        logger.puts("Reading audio file #{@path}")
+        logger.send(:puts, "Reading audio file #{@path}")
       end
       buffer = RubyAudio::Buffer.float(@size, @num_channels)
       begin
@@ -28,7 +28,7 @@ module AudioPlayback
         data = buffer.to_a
       rescue RubyAudio::Error
       end
-      logger.puts("Finished reading audio file #{@path}") if logger
+      logger.send(:puts, "Finished reading audio file #{@path}") if logger
       data
     end
 
